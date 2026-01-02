@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  storeName String?
+  niche     String?
+  onboardingCompleted Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  products Product[]
+  sales    Sale[]
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  barcode     String   @unique
+  name        String
+  description String?
+  price       Float
+  stock       Int      @default(0)
+  minStock    Int      @default(5)
+  userId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sales SaleItem[]
+}
+
+model Sale {
+  id        String    @id @default(cuid())
+  userId    String
+  total     Float
+  createdAt DateTime  @default(now())
+  
+  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items SaleItem[]
+}
+
+model SaleItem {
+  id        String   @id @default(cuid())
+  saleId    String
+  productId String
+  quantity  Int
+  price     Float
+  subtotal  Float
+  
+  sale    Sale    @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  @@index([saleId])
+  @@index([productId])
+}
