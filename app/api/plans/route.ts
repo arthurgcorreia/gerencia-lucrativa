@@ -9,10 +9,18 @@ export async function GET(request: NextRequest) {
     })
 
     return NextResponse.json(plans)
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching plans:', error)
+    console.error('Error details:', {
+      message: error?.message,
+      code: error?.code,
+      stack: process.env.NODE_ENV === 'development' ? error?.stack : undefined,
+    })
     return NextResponse.json(
-      { error: 'Erro ao buscar planos' },
+      { 
+        error: 'Erro ao buscar planos',
+        details: process.env.NODE_ENV === 'development' ? error?.message : undefined
+      },
       { status: 500 }
     )
   }
