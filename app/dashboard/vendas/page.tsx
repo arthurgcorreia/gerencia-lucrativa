@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { ShoppingCart, Barcode, Plus, Minus, Trash2, Check } from 'lucide-react'
+import { ShoppingCart, Barcode, Plus, Minus, Trash2, Check, Camera } from 'lucide-react'
+import BarcodeScanner from '@/components/BarcodeScanner'
 
 interface CartItem {
   id: string
@@ -19,6 +20,7 @@ export default function VendasPage() {
   const [loading, setLoading] = useState(false)
   const [total, setTotal] = useState(0)
   const [showSuccess, setShowSuccess] = useState(false)
+  const [showScanner, setShowScanner] = useState(false)
   const barcodeInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -38,11 +40,14 @@ export default function VendasPage() {
   const handleBarcodeSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!barcodeInput.trim()) return
+    await searchAndAddProduct(barcodeInput.trim())
+  }
 
+  const searchAndAddProduct = async (barcode: string) => {
     setLoading(true)
     try {
-      // Buscar produto por código de barras
-      const response = await fetch(`/api/products/barcode-search/${barcodeInput}`)
+      // Buscar produto por código de barras no estoque cadastrado
+      const response = await fetch(`/api/products/barcode-search/${barcode}`)
       if (response.ok) {
         const product = await response.json()
         if (product) {
@@ -50,10 +55,10 @@ export default function VendasPage() {
           setBarcodeInput('')
           barcodeInputRef.current?.focus()
         } else {
-          alert('Produto não encontrado')
+          alert('Produto não encontrado no estoque')
         }
       } else {
-        alert('Produto não encontrado')
+        alert('Produto não encontrado no estoque')
       }
     } catch (error) {
       console.error('Error fetching product:', error)
@@ -61,6 +66,13 @@ export default function VendasPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleScan = (barcode: string) => {
+    // Fecha o scanner
+    setShowScanner(false)
+    // Busca e adiciona o produto ao carrinho
+    searchAndAddProduct(barcode)
   }
 
   const addToCart = (product: any) => {
@@ -183,9 +195,19 @@ export default function VendasPage() {
                 />
               </div>
               <button
+                type="button"
+                onClick={() => setShowScanner(true)}
+                disabled={loading}
+                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold flex items-center gap-2"
+                title="Escanear código de barras com a câmera"
+              >
+                <Camera className="w-5 h-5" />
+                Escanear
+              </button>
+              <button
                 type="submit"
                 disabled={loading || !barcodeInput.trim()}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
+                className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
               >
                 {loading ? 'Buscando...' : 'Adicionar'}
               </button>
@@ -319,6 +341,13 @@ export default function VendasPage() {
           </div>
         </div>
       </div>
+
+      {/* Barcode Scanner Modal */}
+      <BarcodeScanner
+        isOpen={showScanner}
+        onClose={() => setShowScanner(false)}
+        onScan={handleScan}
+      />
     </div>
   )
 }
