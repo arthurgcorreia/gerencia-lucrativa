@@ -1,0 +1,93 @@
+# Regras do Projeto GerenciaLucrativa
+
+## 📋 Padrões de Desenvolvimento
+
+### 1. Padrão do Projeto
+- **SEMPRE** seguir 100% do padrão visual e de código estabelecido no projeto
+- Manter consistência com o design system azul/branco
+- Usar componentes e estilos já existentes antes de criar novos
+- Seguir a estrutura de pastas e nomenclatura existente
+
+### 2. Commits
+- **OBRIGATÓRIO**: Fazer commits MUITO DESCRITIVOS e detalhados
+- Formato: `tipo: Descrição curta mas clara - Detalhamento completo do que foi feito`
+- Tipos permitidos:
+  - `feat:` - Nova funcionalidade
+  - `fix:` - Correção de bug
+  - `refactor:` - Refatoração de código
+  - `style:` - Mudanças de estilo/formatação
+  - `docs:` - Documentação
+  - `chore:` - Tarefas de manutenção
+
+Exemplo de commit bom:
+```
+feat: Adiciona máscara de valor monetário no campo de preço - Implementa formatação automática como moeda brasileira (R$). Adiciona funções formatCurrency e parseCurrency. Campo exibe valor formatado durante digitação. Converte valor formatado para número ao salvar. Mantém formatação ao editar produto. Usa Intl.NumberFormat para formatação padrão brasileira.
+```
+
+### 3. Branch Per Feature (OBRIGATÓRIO)
+- **SEMPRE** criar uma nova branch para cada feature/funcionalidade
+- Nomenclatura: `feature/nome-da-funcionalidade` ou `fix/nome-da-correcao`
+- **NUNCA** commitar diretamente na branch `main` ou `master`
+- Commits devem ser feitos **SEMPRE** na branch da feature atual
+
+### 4. Fluxo de Trabalho
+1. Criar branch para a feature: `git checkout -b feature/nome-da-feature`
+2. Desenvolver a funcionalidade
+3. Fazer commits descritivos na branch da feature
+4. Fazer push da branch: `git push origin feature/nome-da-feature`
+5. Criar Pull Request (PR) para review
+6. Aguardar aprovação antes de fazer merge na main
+
+### 5. Pull Requests
+- **SEMPRE** criar PR após completar a feature na branch
+- PR deve ter descrição clara do que foi implementado
+- Aguardar aprovação antes de fazer merge
+- **NUNCA** fazer merge direto na main sem PR aprovado
+
+### 6. Qualidade de Código
+- Manter código limpo e legível
+- Seguir padrões TypeScript/React estabelecidos
+- Adicionar tratamento de erros quando necessário
+- Validar inputs do usuário
+- Manter consistência de estilo com o restante do projeto
+
+### 7. Testes e Validação
+- Testar funcionalidades antes de commitar
+- Verificar se não quebrou funcionalidades existentes
+- Validar em diferentes tamanhos de tela (responsividade)
+
+## ⚠️ Regras Críticas
+
+1. **NUNCA** commitar na branch main/master sem PR aprovado
+2. **SEMPRE** criar branch para novas funcionalidades
+3. **SEMPRE** fazer commits descritivos e detalhados
+4. **SEMPRE** seguir o padrão visual do projeto (azul/branco, design moderno)
+5. **SEMPRE** criar PR após completar a feature
+
+## 📝 Exemplo de Fluxo Completo
+
+```bash
+# 1. Criar branch
+git checkout -b feature/adicionar-filtro-produtos
+
+# 2. Desenvolver e commitar
+git add .
+git commit -m "feat: Adiciona filtro de produtos por categoria - Implementa componente FilterBar com dropdown de categorias. Adiciona estado de filtros no componente EstoquePage. Filtra produtos em tempo real conforme seleção. Mantém design consistente com padrão azul/branco. Adiciona ícone de filtro e animações suaves."
+
+# 3. Push da branch
+git push origin feature/adicionar-filtro-produtos
+
+# 4. Criar PR no GitHub/GitLab
+# 5. Aguardar aprovação
+# 6. Fazer merge após aprovação
+```
+
+## 🎨 Padrão Visual do Projeto
+
+- **Cores principais**: Azul (#3b82f6, #2563eb) e Branco
+- **Estilo**: Moderno, limpo, com bordas arredondadas (rounded-lg, rounded-xl)
+- **Tipografia**: Fontes claras e legíveis
+- **Espaçamento**: Generoso, com padding adequado
+- **Sombras**: Leves para dar profundidade (shadow-md, shadow-lg)
+- **Transições**: Suaves em todos os elementos interativos
+
