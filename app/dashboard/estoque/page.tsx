@@ -63,6 +63,8 @@ export default function EstoquePage() {
   const [showScanner, setShowScanner] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [submitError, setSubmitError] = useState('')
+  const [barcodeLoading, setBarcodeLoading] = useState(false)
+  const [barcodeSuccess, setBarcodeSuccess] = useState(false)
 
   // Funções de validação
   const validateName = (name: string): string => {
@@ -295,28 +297,62 @@ export default function EstoquePage() {
   }
 
   const handleBarcodeSearch = async (barcode: string) => {
+    // Limpa sucesso anterior
+    setBarcodeSuccess(false)
+    
+    // Valida se o código de barras tem tamanho mínimo
+    if (!barcode || barcode.trim().length < 8) {
+      return
+    }
+
+    setBarcodeLoading(true)
     try {
-      const response = await fetch(`/api/products/barcode/${barcode}`)
+      const response = await fetch(`/api/products/barcode/${barcode.trim()}`)
       if (response.ok) {
         const data = await response.json()
         if (data.name) {
+          // Formata o preço se existir
+          let formattedPrice = ''
+          if (data.price && typeof data.price === 'number' && data.price > 0) {
+            formattedPrice = formatCurrency((data.price * 100).toString())
+          }
+          
+          // Atualiza o formulário com os dados encontrados
           setFormData({
             ...formData,
-            barcode: barcode,
+            barcode: barcode.trim(),
             name: data.name,
-            price: data.price?.toString() || '',
+            price: formattedPrice,
             description: data.description || formData.description,
           })
+          
+          // Mostra feedback de sucesso
+          setBarcodeSuccess(true)
+          setTimeout(() => setBarcodeSuccess(false), 3000) // Remove após 3 segundos
+          
+          // Limpa erros dos campos preenchidos
+          const newErrors = { ...errors }
+          if (newErrors.name) delete newErrors.name
+          if (newErrors.barcode) delete newErrors.barcode
+          if (formattedPrice && newErrors.price) delete newErrors.price
+          setErrors(newErrors)
         } else {
           // Se não encontrou dados da API, apenas atualiza o código de barras
           setFormData({
             ...formData,
-            barcode: barcode,
+            barcode: barcode.trim(),
           })
         }
       }
     } catch (error) {
       console.error('Error fetching barcode data:', error)
+      // Em caso de erro, apenas atualiza o código de barras
+      setFormData({
+        ...formData,
+        barcode: barcode.trim(),
+      })
+    } finally {
+      setBarcodeLoading(false)
     }
   }
 
@@ -510,48 +546,70 @@ export default function EstoquePage() {
                   </label>
                   <div className="flex gap-3">
                     <div className="flex-1">
-                      <input
-                        type="text"
-                        value={formData.barcode}
-                        onChange={(e) => {
-                          const value = e.target.value
-                          setFormData({ ...formData, barcode: value })
-                          // Limpa erro ao digitar
-                          if (errors.barcode) {
-                            setErrors({ ...errors, barcode: '' })
-                          }
-                          if (value.length >= 8) {
-                            handleBarcodeSearch(value)
-                          }
-                        }}
-                        onBlur={() => {
-                          const error = validateBarcode(formData.barcode)
-                          if (error) {
-                            setErrors({ ...errors, barcode: error })
-                          } else {
-                            const newErrors = { ...errors }
-                            delete newErrors.barcode
-                            setErrors(newErrors)
-                          }
-                        }}
-                        className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all bg-white font-mono text-lg ${
-                          errors.barcode
-                            ? 'border-red-500 focus:border-red-500'
-                            : 'border-gray-300 focus:border-blue-500'
-                        }`}
-                        placeholder="Digite ou escaneie o código (opcional)"
-                      />
+                      <div className="relative">
+                        <input
+                          type="text"
+                          value={formData.barcode}
+                          onChange={(e) => {
+                            const value = e.target.value
+                            setFormData({ ...formData, barcode: value })
+                            // Limpa erro e sucesso ao digitar
+                            if (errors.barcode) {
+                              setErrors({ ...errors, barcode: '' })
+                            }
+                            setBarcodeSuccess(false)
+                            if (value.length >= 8 && /^\d+$/.test(value)) {
+                              handleBarcodeSearch(value)
+                            }
+                          }}
+                          onBlur={() => {
+                            const error = validateBarcode(formData.barcode)
+                            if (error) {
+                              setErrors({ ...errors, barcode: error })
+                            } else {
+                              const newErrors = { ...errors }
+                              delete newErrors.barcode
+                              setErrors(newErrors)
+                            }
+                          }}
+                          disabled={barcodeLoading}
+                          className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all bg-white font-mono text-lg pr-12 ${
+                            errors.barcode
+                              ? 'border-red-500 focus:border-red-500'
+                              : barcodeSuccess
+                              ? 'border-green-500 focus:border-green-500'
+                              : 'border-gray-300 focus:border-blue-500'
+                          } ${barcodeLoading ? 'opacity-60 cursor-not-allowed' : ''}`}
+                          placeholder="Digite ou escaneie o código (opcional)"
+                        />
+                        {/* Ícone de loading ou sucesso */}
+                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                          {barcodeLoading && (
+                            <Loader2 className="w-5 h-5 text-blue-600 animate-spin" />
+                          )}
+                          {barcodeSuccess && !barcodeLoading && (
+                            <CheckCircle2 className="w-5 h-5 text-green-600" />
+                          )}
+                        </div>
+                      </div>
                       {errors.barcode && (
                         <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
                           <AlertCircle className="w-4 h-4" />
                           {errors.barcode}
                         </p>
                       )}
+                      {barcodeSuccess && !errors.barcode && (
+                        <p className="mt-2 text-sm text-green-600 flex items-center gap-1">
+                          <CheckCircle2 className="w-4 h-4" />
+                          Dados do produto encontrados e preenchidos automaticamente!
+                        </p>
+                      )}
                     </div>
                     <button
                       type="button"
                       onClick={() => setShowScanner(true)}
-                      className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-all flex items-center gap-2 font-semibold shadow-md hover:shadow-lg"
+                      disabled={barcodeLoading}
+                      className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-all flex items-center gap-2 font-semibold shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                       title="Escanear código de barras com a câmera"
                     >
                       <Camera className="w-5 h-5" />
