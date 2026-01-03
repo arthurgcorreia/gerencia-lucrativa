@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { ShoppingCart, Barcode, Plus, Minus, Trash2, Check, Camera } from 'lucide-react'
+import { ShoppingCart, Barcode, Plus, Minus, Trash2, Check, Camera, Search, X } from 'lucide-react'
 import BarcodeScanner from '@/components/BarcodeScanner'
 
 interface CartItem {
@@ -16,44 +16,102 @@ interface CartItem {
 
 export default function VendasPage() {
   const [cart, setCart] = useState<CartItem[]>([])
-  const [barcodeInput, setBarcodeInput] = useState('')
+  const [searchInput, setSearchInput] = useState('')
+  const [searchResults, setSearchResults] = useState<any[]>([])
+  const [showResults, setShowResults] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [searchLoading, setSearchLoading] = useState(false)
   const [total, setTotal] = useState(0)
   const [showSuccess, setShowSuccess] = useState(false)
   const [showScanner, setShowScanner] = useState(false)
-  const barcodeInputRef = useRef<HTMLInputElement>(null)
+  const searchInputRef = useRef<HTMLInputElement>(null)
+  const searchResultsRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     calculateTotal()
   }, [cart])
 
   useEffect(() => {
-    // Focar no input de código de barras ao carregar
-    barcodeInputRef.current?.focus()
+    // Focar no input de busca ao carregar
+    searchInputRef.current?.focus()
   }, [])
+
+  // Fechar resultados ao clicar fora
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchResultsRef.current &&
+        !searchResultsRef.current.contains(event.target as Node) &&
+        searchInputRef.current &&
+        !searchInputRef.current.contains(event.target as Node)
+      ) {
+        setShowResults(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
+
+  // Busca produtos enquanto digita (após 3 caracteres)
+  useEffect(() => {
+    const searchProducts = async () => {
+      if (searchInput.trim().length < 3) {
+        setSearchResults([])
+        setShowResults(false)
+        return
+      }
+
+      setSearchLoading(true)
+      try {
+        const response = await fetch(`/api/products/search?q=${encodeURIComponent(searchInput.trim())}`)
+        if (response.ok) {
+          const products = await response.json()
+          setSearchResults(products)
+          setShowResults(products.length > 0)
+        }
+      } catch (error) {
+        console.error('Error searching products:', error)
+        setSearchResults([])
+      } finally {
+        setSearchLoading(false)
+      }
+    }
+
+    const timeoutId = setTimeout(searchProducts, 300) // Debounce de 300ms
+    return () => clearTimeout(timeoutId)
+  }, [searchInput])
 
   const calculateTotal = () => {
     const sum = cart.reduce((acc, item) => acc + item.subtotal, 0)
     setTotal(sum)
   }
 
-  const handleBarcodeSubmit = async (e: React.FormEvent) => {
+  const handleSearchSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!barcodeInput.trim()) return
-    await searchAndAddProduct(barcodeInput.trim())
+    if (!searchInput.trim()) return
+    
+    // Se há apenas um resultado ou resultado exato, adiciona diretamente
+    if (searchResults.length === 1) {
+      selectProduct(searchResults[0])
+      return
+    }
+    
+    // Caso contrário, tenta buscar por código de barras exato
+    await searchAndAddProductByBarcode(searchInput.trim())
   }
 
-  const searchAndAddProduct = async (barcode: string) => {
+  const searchAndAddProductByBarcode = async (barcode: string) => {
     setLoading(true)
     try {
-      // Buscar produto por código de barras no estoque cadastrado
-      const response = await fetch(`/api/products/barcode-search/${barcode}`)
+      // Buscar produto por código de barras exato no estoque cadastrado
+      const response = await fetch(`/api/products/barcode-search/${encodeURIComponent(barcode)}`)
       if (response.ok) {
         const product = await response.json()
         if (product) {
-          addToCart(product)
-          setBarcodeInput('')
-          barcodeInputRef.current?.focus()
+          selectProduct(product)
         } else {
           alert('Produto não encontrado no estoque')
         }
@@ -68,11 +126,19 @@ export default function VendasPage() {
     }
   }
 
+  const selectProduct = (product: any) => {
+    addToCart(product)
+    setSearchInput('')
+    setSearchResults([])
+    setShowResults(false)
+    searchInputRef.current?.focus()
+  }
+
   const handleScan = (barcode: string) => {
     // Fecha o scanner
     setShowScanner(false)
-    // Busca e adiciona o produto ao carrinho
-    searchAndAddProduct(barcode)
+    // Busca e adiciona o produto ao carrinho por código de barras exato
+    searchAndAddProductByBarcode(barcode)
   }
 
   const addToCart = (product: any) => {
@@ -174,25 +240,78 @@ export default function VendasPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column - Barcode Input and Cart */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Barcode Input */}
+          {/* Product Search */}
           <div className="bg-white rounded-xl shadow-md p-6">
             <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <Barcode className="w-6 h-6 text-blue-600" />
-              Código de Barras
+              <Search className="w-6 h-6 text-blue-600" />
+              Buscar Produto
             </h2>
-            <form onSubmit={handleBarcodeSubmit} className="flex gap-4">
+            <form onSubmit={handleSearchSubmit} className="flex gap-4">
               <div className="flex-1 relative">
-                <Barcode className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
-                  ref={barcodeInputRef}
+                  ref={searchInputRef}
                   type="text"
-                  value={barcodeInput}
-                  onChange={(e) => setBarcodeInput(e.target.value)}
-                  placeholder="Escaneie ou digite o código de barras..."
+                  value={searchInput}
+                  onChange={(e) => {
+                    setSearchInput(e.target.value)
+                    if (e.target.value.trim().length >= 3) {
+                      setShowResults(true)
+                    }
+                  }}
+                  onFocus={() => {
+                    if (searchResults.length > 0) {
+                      setShowResults(true)
+                    }
+                  }}
+                  placeholder="Digite o nome ou código de barras do produto (mín. 3 letras)..."
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
                   disabled={loading}
                   autoFocus
                 />
+                {searchInput && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchInput('')
+                      setSearchResults([])
+                      setShowResults(false)
+                      searchInputRef.current?.focus()
+                    }}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                )}
+                
+                {/* Lista de resultados */}
+                {showResults && searchResults.length > 0 && (
+                  <div
+                    ref={searchResultsRef}
+                    className="absolute z-50 w-full mt-2 bg-white border border-gray-300 rounded-lg shadow-lg max-h-64 overflow-y-auto"
+                  >
+                    {searchLoading && (
+                      <div className="p-4 text-center text-gray-500">
+                        Buscando...
+                      </div>
+                    )}
+                    {!searchLoading && searchResults.map((product) => (
+                      <button
+                        key={product.id}
+                        type="button"
+                        onClick={() => selectProduct(product)}
+                        className="w-full text-left p-4 hover:bg-blue-50 border-b border-gray-100 last:border-b-0 transition-colors"
+                      >
+                        <div className="font-semibold text-gray-900">{product.name}</div>
+                        <div className="flex items-center gap-4 mt-1 text-sm text-gray-600">
+                          <span className="font-mono">{product.barcode}</span>
+                          <span className="text-blue-600 font-semibold">R$ {product.price.toFixed(2)}</span>
+                          <span className="text-gray-500">Estoque: {product.stock}</span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
               <button
                 type="button"
@@ -206,7 +325,7 @@ export default function VendasPage() {
               </button>
               <button
                 type="submit"
-                disabled={loading || !barcodeInput.trim()}
+                disabled={loading || !searchInput.trim()}
                 className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
               >
                 {loading ? 'Buscando...' : 'Adicionar'}
@@ -225,7 +344,7 @@ export default function VendasPage() {
               <div className="text-center py-12 text-gray-500">
                 <ShoppingCart className="w-16 h-16 mx-auto mb-4 text-gray-300" />
                 <p>Carrinho vazio</p>
-                <p className="text-sm mt-2">Adicione produtos usando o código de barras</p>
+                <p className="text-sm mt-2">Busque produtos por nome ou código de barras</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -330,7 +449,7 @@ export default function VendasPage() {
               <button
                 onClick={() => {
                   setCart([])
-                  barcodeInputRef.current?.focus()
+                  searchInputRef.current?.focus()
                 }}
                 disabled={cart.length === 0}
                 className="text-sm text-red-600 hover:text-red-700 disabled:text-gray-400 disabled:cursor-not-allowed"

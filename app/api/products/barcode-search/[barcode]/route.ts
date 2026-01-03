@@ -20,8 +20,9 @@ export async function GET(
       return NextResponse.json({ error: 'Token inválido' }, { status: 401 })
     }
 
-    const barcode = params.barcode
+    const barcode = params.barcode.trim()
 
+    // Busca exata por código de barras (case sensitive para garantir correspondência exata)
     const product = await prisma.product.findFirst({
       where: {
         barcode: barcode,
