@@ -1102,15 +1102,15 @@ export default function EstoquePage() {
 
       {/* Stock Update Modal */}
       {showStockModal && productToUpdateStock && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full">
-            <div className="px-8 py-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-white">
+        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 p-0 md:p-4">
+          <div className="bg-white rounded-none md:rounded-2xl shadow-2xl max-w-md w-full h-full md:h-auto md:max-h-[90vh] flex flex-col">
+            <div className="px-4 md:px-8 py-4 md:py-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-white">
               <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900">
+                <div className="flex-1 min-w-0 pr-2">
+                  <h2 className="text-xl md:text-2xl font-bold text-gray-900">
                     {stockOperation === 'add' ? 'Adicionar ao Estoque' : 'Remover do Estoque'}
                   </h2>
-                  <p className="text-gray-600 mt-1 text-sm">
+                  <p className="text-gray-600 mt-1 text-xs md:text-sm line-clamp-2">
                     {stockOperation === 'add' 
                       ? `Adicionar quantidade ao produto: ${productToUpdateStock.name}`
                       : `Remover quantidade do produto: ${productToUpdateStock.name}`
@@ -1199,8 +1199,8 @@ export default function EstoquePage() {
       {/* Delete Confirmation Modal */}
       {showDeleteModal && productToDelete && (
         <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full">
-            <div className="p-6">
+          <div className="bg-white rounded-xl md:rounded-2xl shadow-2xl max-w-md w-full">
+            <div className="p-4 md:p-6">
               <div className="flex items-center gap-4 mb-4">
                 <div className="flex-shrink-0 w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
                   <Trash2 className="w-6 h-6 text-red-600" />
