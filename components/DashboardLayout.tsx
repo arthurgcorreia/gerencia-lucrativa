@@ -68,17 +68,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <aside
           className={`${
             sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-          } lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 transition-transform duration-300`}
+          } lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 transition-transform duration-300 flex-shrink-0`}
         >
-          <div className="h-full flex flex-col">
-            <div className="p-6 border-b border-gray-200 hidden lg:block">
+          <div className="h-full flex flex-col min-h-screen">
+            <div className="p-6 border-b border-gray-200 hidden lg:block flex-shrink-0">
               <div className="flex items-center space-x-2">
                 <Store className="w-8 h-8 text-blue-600" />
                 <span className="text-xl font-bold text-blue-600">GerenciaLucrativa</span>
               </div>
             </div>
 
-            <nav className="flex-1 p-4 space-y-2">
+            <nav className="flex-1 p-4 space-y-2 overflow-y-auto min-h-0">
               {navItems.map((item) => {
                 const Icon = item.icon
                 const isActive = pathname === item.href
@@ -93,16 +93,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         : 'text-gray-700 hover:bg-gray-50'
                     }`}
                   >
-                    <Icon className="w-5 h-5" />
-                    <span>{item.label}</span>
+                    <Icon className="w-5 h-5 flex-shrink-0" />
+                    <span className="whitespace-nowrap">{item.label}</span>
                   </Link>
                 )
               })}
             </nav>
 
-            <div className="p-4 border-t border-gray-200">
+            <div className="p-4 border-t border-gray-200 flex-shrink-0">
               <div className="flex items-center space-x-3 mb-4 px-4 py-2">
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
                   <User className="w-5 h-5 text-blue-600" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -118,15 +118,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 onClick={handleLogout}
                 className="w-full flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
               >
-                <LogOut className="w-5 h-5" />
-                <span>Sair</span>
+                <LogOut className="w-5 h-5 flex-shrink-0" />
+                <span className="whitespace-nowrap">Sair</span>
               </button>
             </div>
           </div>
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 lg:ml-0">
+        <main className="flex-1 min-w-0 lg:ml-0">
           {children}
         </main>
       </div>
