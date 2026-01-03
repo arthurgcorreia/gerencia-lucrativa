@@ -15,7 +15,9 @@ import {
   Rocket,
   Sparkles,
   X,
-  Check
+  Check,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react'
 import StockWaveLogo from '@/components/StockWaveLogo'
 
@@ -47,22 +49,23 @@ export default function Home() {
       const response = await fetch('/api/plans')
       if (response.ok) {
         const data = await response.json()
-        // Filtrar os 3 planos: Básico, Ultra, Basic+ (professional)
+        // Filtrar apenas Ultra e Basic (remover Basic+)
         const filteredPlans = data
-          .filter((plan: Plan) => plan.slug === 'basic' || plan.slug === 'ultra' || plan.slug === 'professional')
+          .filter((plan: Plan) => plan.slug === 'basic' || plan.slug === 'ultra')
           .map((plan: Plan) => {
-            // Renomear professional para Basic+
-            if (plan.slug === 'professional') {
-              return { ...plan, name: 'Basic+' }
+            // Marcar Basic como mais popular
+            if (plan.slug === 'basic') {
+              return { ...plan, isPopular: true }
             }
             return plan
           })
           .sort((a: Plan, b: Plan) => {
-            // Ordenar: Basic, Ultra, Basic+ (Ultra no meio)
-            const order: Record<string, number> = { basic: 0, ultra: 1, professional: 2 }
+            // Ordenar: Ultra primeiro (mais caro), depois Basic
+            const order: Record<string, number> = { ultra: 0, basic: 1 }
             return (order[a.slug] || 999) - (order[b.slug] || 999)
           })
         setPlans(filteredPlans)
+        setCurrentPlanIndex(0) // Começar com Ultra (primeiro)
       }
     } catch (error) {
       console.error('Error fetching plans:', error)
@@ -73,6 +76,7 @@ export default function Home() {
 
   const handleOpenPricingModal = () => {
     setShowPricingModal(true)
+    setCurrentPlanIndex(0) // Sempre começar com Ultra
     if (plans.length === 0) {
       fetchPlans()
     }
@@ -81,6 +85,14 @@ export default function Home() {
   const handleSelectPlan = (planSlug: string) => {
     // Redirecionar para registro com o plano selecionado
     window.location.href = `/register?plan=${planSlug}`
+  }
+
+  const handleNextPlan = () => {
+    setCurrentPlanIndex((prev) => (prev + 1) % plans.length)
+  }
+
+  const handlePrevPlan = () => {
+    setCurrentPlanIndex((prev) => (prev - 1 + plans.length) % plans.length)
   }
 
   return (
