@@ -323,7 +323,7 @@ export default function Home() {
                   <div className="animate-pulse text-blue-600">Carregando planos...</div>
                 </div>
               ) : (
-                <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto items-stretch">
                   {plans.map((plan) => {
                     // Formatar preço com vírgula (formato brasileiro)
                     const formatPrice = (price: number): string => {
@@ -333,48 +333,54 @@ export default function Home() {
                     return (
                       <div
                         key={plan.id}
-                        className={`relative bg-white rounded-2xl shadow-lg p-6 md:p-8 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl flex flex-col ${
+                        className={`relative bg-white rounded-2xl shadow-lg p-6 md:p-8 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl flex flex-col h-full ${
                           plan.isPopular
-                            ? 'border-4 border-blue-600 ring-4 ring-blue-100 scale-105'
+                            ? 'border-4 border-blue-600 ring-4 ring-blue-100'
                             : 'border-2 border-gray-200'
                         }`}
                       >
                         {plan.isPopular && (
-                          <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                          <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
                             <span className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
                               Mais Popular
                             </span>
                           </div>
                         )}
 
-                        <div className="text-center mb-6 flex-shrink-0">
-                          <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
-                          {plan.description && (
-                            <p className="text-gray-600 text-sm mb-4">{plan.description}</p>
-                          )}
-                          <div className="mb-4">
-                            <span className="text-5xl font-bold text-gray-900">
-                              R$ {formatPrice(plan.price)}
-                            </span>
-                            <span className="text-gray-600 text-lg">/mês</span>
+                        <div className="text-center mb-6 flex-shrink-0 pt-4">
+                          <h3 className="text-2xl font-bold text-gray-900 mb-2 min-h-[32px] flex items-center justify-center">{plan.name}</h3>
+                          <div className="min-h-[40px] flex items-center justify-center">
+                            {plan.description ? (
+                              <p className="text-gray-600 text-sm mb-4">{plan.description}</p>
+                            ) : (
+                              <div className="mb-4"></div>
+                            )}
                           </div>
-                          <div className="text-sm text-gray-500">
+                          <div className="mb-4 min-h-[72px] flex items-center justify-center">
+                            <div>
+                              <span className="text-5xl font-bold text-gray-900">
+                                R$ {formatPrice(plan.price)}
+                              </span>
+                              <span className="text-gray-600 text-lg">/mês</span>
+                            </div>
+                          </div>
+                          <div className="text-sm text-gray-500 min-h-[20px] flex items-center justify-center">
                             Válido por {plan.duration} dias
                           </div>
                         </div>
 
-                        <ul className="space-y-3 mb-8 flex-grow">
+                        <ul className="space-y-3 mb-8 flex-grow min-h-0">
                           {(Array.isArray(plan.features) ? plan.features : []).map((feature: string, index: number) => (
                             <li key={index} className="flex items-start gap-3">
                               <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                              <span className="text-gray-700 text-sm">{feature}</span>
+                              <span className="text-gray-700 text-sm leading-relaxed">{feature}</span>
                             </li>
                           ))}
                         </ul>
 
                         <button
                           onClick={() => handleSelectPlan(plan.slug)}
-                          className={`w-full py-3 px-6 rounded-xl font-semibold text-lg transition-all flex-shrink-0 ${
+                          className={`w-full py-3 px-6 rounded-xl font-semibold text-lg transition-all flex-shrink-0 mt-auto ${
                             plan.isPopular
                               ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 shadow-lg'
                               : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
