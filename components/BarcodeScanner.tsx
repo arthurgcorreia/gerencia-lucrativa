@@ -16,27 +16,31 @@ export default function BarcodeScanner({ isOpen, onClose, onScan }: BarcodeScann
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (isOpen && !scannerRef.current) {
+    if (isOpen && !scannerRef.current && !scanning) {
       startScanning()
     }
 
+    if (!isOpen && scannerRef.current) {
+      stopScanning()
+    }
+
     return () => {
-      if (!isOpen) {
+      // Cleanup apenas quando o componente desmonta ou fecha
+      if (scannerRef.current) {
         stopScanning()
       }
     }
   }, [isOpen])
 
-  // Cleanup quando o componente desmonta
-  useEffect(() => {
-    return () => {
-      stopScanning()
-    }
-  }, [])
-
   const startScanning = async () => {
     try {
       setError(null)
+      
+      // Garante que não há scanner ativo
+      if (scannerRef.current) {
+        await stopScanning()
+      }
+
       const scanner = new Html5Qrcode('barcode-scanner')
       scannerRef.current = scanner
 
@@ -49,8 +53,9 @@ export default function BarcodeScanner({ isOpen, onClose, onScan }: BarcodeScann
         (decodedText) => {
           // Código escaneado com sucesso
           onScan(decodedText)
-          stopScanning()
-          onClose()
+          stopScanning().then(() => {
+            onClose()
+          })
         },
         () => {
           // Ignora erros de leitura (continua tentando)
@@ -62,29 +67,35 @@ export default function BarcodeScanner({ isOpen, onClose, onScan }: BarcodeScann
       console.error('Error starting scanner:', err)
       setError(err.message || 'Erro ao iniciar a câmera')
       setScanning(false)
+      scannerRef.current = null
     }
   }
 
-  const stopScanning = () => {
-    if (scannerRef.current) {
-      scannerRef.current
-        .stop()
-        .then(() => {
-          scannerRef.current?.clear()
-          scannerRef.current = null
-          setScanning(false)
-        })
-        .catch((err: any) => {
-          // Ignora erros ao parar scanner (já estava parado ou não iniciado)
-          if (err && !err.message?.includes('not running')) {
-            console.error('Error stopping scanner:', err)
-          }
-          // Limpa mesmo se houver erro
-          scannerRef.current?.clear()
-          scannerRef.current = null
-          setScanning(false)
-        })
-    } else {
+  const stopScanning = async (): Promise<void> => {
+    if (!scannerRef.current) {
+      setScanning(false)
+      return Promise.resolve()
+    }
+
+    const scanner = scannerRef.current
+    scannerRef.current = null // Remove referência antes para evitar múltiplas chamadas
+
+    try {
+      await scanner.stop()
+      scanner.clear()
+      setScanning(false)
+    } catch (err: any) {
+      // Ignora erros ao parar scanner (já estava parado ou não iniciado)
+      const errorMessage = err?.message || err?.toString() || ''
+      if (!errorMessage.includes('not running') && !errorMessage.includes('not started')) {
+        console.error('Error stopping scanner:', err)
+      }
+      // Tenta limpar mesmo se houver erro
+      try {
+        scanner.clear()
+      } catch (clearErr) {
+        // Ignora erro de clear
+      }
       setScanning(false)
     }
   }
