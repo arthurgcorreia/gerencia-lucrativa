@@ -28,6 +28,37 @@ export default function EstoquePage() {
     minStock: '5',
     description: '',
   })
+
+  // Função para formatar valor monetário
+  const formatCurrency = (value: string): string => {
+    // Remove tudo que não é dígito
+    const numbers = value.replace(/\D/g, '')
+    
+    if (!numbers) return ''
+    
+    // Converte para número e divide por 100 para ter centavos
+    const amount = parseInt(numbers) / 100
+    
+    // Formata como moeda brasileira
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+      minimumFractionDigits: 2,
+    }).format(amount)
+  }
+
+  // Função para converter valor formatado para número
+  const parseCurrency = (value: string): string => {
+    // Remove tudo que não é dígito
+    const numbers = value.replace(/\D/g, '')
+    
+    if (!numbers) return ''
+    
+    // Converte para número e divide por 100 para ter centavos
+    const amount = parseInt(numbers) / 100
+    
+    return amount.toString()
+  }
   const [showScanner, setShowScanner] = useState(false)
 
   useEffect(() => {
@@ -88,7 +119,7 @@ export default function EstoquePage() {
     setFormData({
       name: product.name,
       barcode: product.barcode,
-      price: product.price.toString(),
+      price: formatCurrency((product.price * 100).toString()), // Converte para centavos e formata
       stock: product.stock.toString(),
       minStock: product.minStock.toString(),
       description: product.description || '',
