@@ -50,7 +50,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Mobile Header */}
-      <div className="lg:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+      <div className="lg:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between fixed top-0 left-0 right-0 z-40">
         <div className="flex items-center space-x-2">
           <Store className="w-6 h-6 text-blue-600" />
           <span className="font-bold text-blue-600">GerenciaLucrativa</span>
@@ -64,13 +64,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </div>
 
       <div className="flex">
-        {/* Sidebar */}
+        {/* Sidebar - Fixed on desktop */}
         <aside
           className={`${
             sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-          } lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 transition-transform duration-300 flex-shrink-0`}
+          } lg:translate-x-0 fixed lg:fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 transition-transform duration-300 flex-shrink-0 h-screen`}
         >
-          <div className="h-full flex flex-col min-h-screen">
+          <div className="h-full flex flex-col">
             <div className="p-6 border-b border-gray-200 hidden lg:block flex-shrink-0">
               <div className="flex items-center space-x-2">
                 <Store className="w-8 h-8 text-blue-600" />
@@ -125,8 +125,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
         </aside>
 
-        {/* Main Content */}
-        <main className="flex-1 min-w-0 lg:ml-0">
+        {/* Main Content - With margin for fixed sidebar on desktop */}
+        <main className="flex-1 min-w-0 lg:ml-64 w-full overflow-y-auto h-screen pt-14 lg:pt-0">
           {children}
         </main>
       </div>
