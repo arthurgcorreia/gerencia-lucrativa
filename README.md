@@ -83,6 +83,16 @@ O sistema estará disponível em [http://localhost:3000](http://localhost:3000)
 - `npm run prisma:migrate` - Cria e aplica migrações
 - `npm run prisma:studio` - Abre o Prisma Studio (interface visual do banco)
 
+## 🌐 Deploy e Compartilhamento
+
+Para colocar o sistema online gratuitamente, consulte o arquivo [DEPLOY.md](./DEPLOY.md) que contém instruções detalhadas para:
+
+- **Vercel** (Recomendado - Permanente e gratuito)
+- **ngrok** (Rápido - Temporário)
+- **Cloudflare Tunnel** (Gratuito)
+
+Todas as opções são gratuitas e fáceis de configurar!
+
 ## 🗄️ Estrutura do Banco de Dados
 
 O sistema utiliza PostgreSQL com Prisma ORM. As principais tabelas são:
