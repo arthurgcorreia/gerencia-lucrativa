@@ -96,7 +96,7 @@ export default function Home() {
         <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between gap-2">
           <div className="flex items-center space-x-1.5 sm:space-x-2 min-w-0 flex-shrink">
             <Store className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600 flex-shrink-0 animate-pulse" />
-            <span className="text-lg sm:text-xl md:text-2xl font-bold text-blue-600 truncate">GerenciaLucrativa</span>
+            <span className="text-lg sm:text-xl md:text-2xl font-bold text-blue-600 truncate">StockWave</span>
           </div>
           <div className="flex items-center gap-2 sm:gap-3 md:gap-4 flex-shrink-0">
             <Link 
@@ -251,7 +251,7 @@ export default function Home() {
         </div>
         <div className="container mx-auto relative z-10">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">
-            Por que escolher o GerenciaLucrativa?
+            Por que escolher o StockWave?
           </h2>
           <p className="text-center text-blue-100 mb-12 text-lg">
             A solução completa para gestão de estoque e vendas
@@ -403,10 +403,10 @@ export default function Home() {
         <div className="container mx-auto text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
             <Store className="w-6 h-6 text-blue-400" />
-            <span className="text-xl font-bold">GerenciaLucrativa</span>
+            <span className="text-xl font-bold">StockWave</span>
           </div>
           <p className="text-gray-400">
-            © 2024 GerenciaLucrativa. Todos os direitos reservados.
+            © 2024 StockWave. Todos os direitos reservados.
           </p>
         </div>
       </footer>

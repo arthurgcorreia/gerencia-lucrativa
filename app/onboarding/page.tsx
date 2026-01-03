@@ -147,7 +147,7 @@ export default function OnboardingPage() {
             <div className="flex items-start gap-4">
               <div className="text-3xl">✨</div>
               <div>
-                <h3 className="font-semibold text-gray-900 mb-2">Bem-vindo ao GerenciaLucrativa!</h3>
+                <h3 className="font-semibold text-gray-900 mb-2">Bem-vindo ao StockWave!</h3>
                 <p className="text-sm text-gray-600">
                   Após completar o onboarding, você poderá começar a registrar produtos, 
                   gerenciar seu estoque e realizar vendas de forma eficiente.

@@ -15,7 +15,7 @@ Você precisa de um banco PostgreSQL na nuvem. Opções gratuitas:
 1. Acesse: https://neon.tech
 2. Clique em **"Sign Up"** (pode usar GitHub)
 3. Clique em **"Create a project"**
-4. Escolha um nome (ex: `gerencia-lucrativa`)
+4. Escolha um nome (ex: `stockwave`)
 5. Selecione a região mais próxima (ex: `US East`)
 6. Clique em **"Create project"**
 7. Após criar, você verá a connection string
@@ -34,7 +34,7 @@ Você precisa de um banco PostgreSQL na nuvem. Opções gratuitas:
 ## 🔧 Passo 2: Configurar Variáveis de Ambiente na Vercel
 
 1. Acesse seu projeto na Vercel: https://vercel.com/dashboard
-2. Clique no projeto `gerencia-lucrativa`
+2. Clique no projeto `stockwave`
 3. Vá em **Settings** (Configurações)
 4. Clique em **Environment Variables** (Variáveis de Ambiente)
 5. Adicione as seguintes variáveis:
@@ -96,7 +96,7 @@ Alguns serviços oferecem SQL Editor online onde você pode executar comandos SQ
 ## ✅ Verificação
 
 Após o deploy:
-1. Acesse a URL do seu projeto (ex: `https://gerencia-lucrativa.vercel.app`)
+1. Acesse a URL do seu projeto (ex: `https://stockwave.vercel.app`)
 2. A página inicial deve carregar
 3. Tente criar uma conta
 4. Se funcionar, está tudo configurado!

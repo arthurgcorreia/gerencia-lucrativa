@@ -1,6 +1,6 @@
 # Guia de Configuração Passo a Passo
 
-Este documento fornece instruções detalhadas para configurar o sistema GerenciaLucrativa.
+Este documento fornece instruções detalhadas para configurar o sistema StockWave.
 
 ## 📋 Pré-requisitos
 
@@ -44,7 +44,7 @@ Crie um arquivo `.env` na raiz do projeto com o seguinte conteúdo:
 
 ```env
 # Database
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/gerenciamento_lucrativo?schema=public"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/stockwave?schema=public"
 
 # NextAuth
 NEXTAUTH_URL="http://localhost:3000"
@@ -74,7 +74,7 @@ Isso iniciará o container do PostgreSQL em segundo plano.
 docker ps
 ```
 
-Você deve ver um container chamado `gerenciamento_lucrativo_db` na lista.
+Você deve ver um container chamado `stockwave_db` na lista.
 
 ### Passo 5: Gerar Prisma Client
 

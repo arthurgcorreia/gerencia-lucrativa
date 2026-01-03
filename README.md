@@ -1,4 +1,4 @@
-# GerenciaLucrativa - Sistema de Gestão de Estoque e Vendas
+# StockWave - Sistema de Gestão de Estoque e Vendas
 
 Sistema completo de gerenciamento de estoque e vendas com interface moderna e intuitiva.
 
@@ -31,7 +31,7 @@ Crie um arquivo `.env` na raiz do projeto (copie o `.env.example` se existir):
 
 ```env
 # Database
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/gerenciamento_lucrativo?schema=public"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/stockwave?schema=public"
 
 # NextAuth
 NEXTAUTH_URL="http://localhost:3000"

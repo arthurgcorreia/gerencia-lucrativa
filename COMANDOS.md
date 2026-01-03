@@ -10,7 +10,7 @@ npm install
 ## 2. Criar arquivo .env
 Crie um arquivo `.env` na raiz do projeto com:
 ```env
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/gerenciamento_lucrativo?schema=public"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/stockwave?schema=public"
 NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="seu-secret-key-aqui-mude-para-algo-aleatorio"
 JWT_SECRET="seu-jwt-secret-key-aqui-mude-para-algo-aleatorio"

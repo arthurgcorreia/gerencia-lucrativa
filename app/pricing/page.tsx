@@ -137,7 +137,7 @@ export default function PricingPage() {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">
             <Store className="w-8 h-8 text-blue-600" />
-            <span className="text-2xl font-bold text-blue-600">GerenciaLucrativa</span>
+            <span className="text-2xl font-bold text-blue-600">StockWave</span>
           </Link>
           <Link
             href="/login"
@@ -327,10 +327,10 @@ export default function PricingPage() {
         <div className="container mx-auto text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
             <Store className="w-6 h-6 text-blue-400" />
-            <span className="text-xl font-bold">GerenciaLucrativa</span>
+            <span className="text-xl font-bold">StockWave</span>
           </div>
           <p className="text-gray-400">
-            © 2024 GerenciaLucrativa. Todos os direitos reservados.
+            © 2024 StockWave. Todos os direitos reservados.
           </p>
         </div>
       </footer>

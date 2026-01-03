@@ -1,4 +1,4 @@
-# Guia de Deploy - GerenciaLucrativa
+# Guia de Deploy - StockWave
 
 Este guia mostra como colocar o sistema online de forma gratuita.
 
@@ -31,7 +31,7 @@ A Vercel é a melhor opção para Next.js, criada pelos mesmos desenvolvedores d
 4. **Configurar variáveis de ambiente:**
    Na Vercel, adicione as seguintes variáveis de ambiente:
    ```
-   DATABASE_URL=postgresql://postgres:postgres@localhost:5432/gerenciamento_lucrativo?schema=public
+   DATABASE_URL=postgresql://postgres:postgres@localhost:5432/stockwave?schema=public
    NEXTAUTH_URL=https://seu-projeto.vercel.app
    NEXTAUTH_SECRET=seu-secret-aqui
    JWT_SECRET=seu-jwt-secret-aqui

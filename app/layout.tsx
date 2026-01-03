@@ -5,7 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "GerenciaLucrativa - Sistema de Gestão de Estoque",
+  title: "StockWave - Sistema de Gestão de Estoque",
   description: "Sistema completo de gerenciamento de estoque e vendas",
 };
 

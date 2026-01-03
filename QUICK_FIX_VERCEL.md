@@ -13,7 +13,7 @@ Error: DATABASE_URL environment variable is not set
 1. Acesse: https://neon.tech
 2. Faça login com GitHub
 3. Clique em **"Create a project"**
-4. Nome: `gerencia-lucrativa`
+4. Nome: `stockwave`
 5. Clique em **"Create project"**
 6. **COPIE a connection string** (ex: `postgresql://user:pass@host/dbname?sslmode=require`)
 
@@ -28,7 +28,7 @@ Error: DATABASE_URL environment variable is not set
 ### 2️⃣ Configurar Variáveis na Vercel (2 min)
 
 1. Acesse: https://vercel.com/dashboard
-2. Clique no projeto **gerencia-lucrativa**
+2. Clique no projeto **stockwave**
 3. Vá em **Settings** (menu superior)
 4. Clique em **Environment Variables** (lado esquerdo)
 5. Adicione cada variável:
