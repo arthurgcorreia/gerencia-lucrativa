@@ -256,7 +256,8 @@ export default function VendasPage() {
               <Search className="w-6 h-6 text-blue-600" />
               Buscar Produto
             </h2>
-            <form onSubmit={handleSearchSubmit} className="flex gap-4">
+            <form onSubmit={handleSearchSubmit} className="space-y-4">
+              <div className="flex gap-4">
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
@@ -340,6 +341,7 @@ export default function VendasPage() {
               >
                 {loading ? 'Buscando...' : 'Adicionar'}
               </button>
+              </div>
             </form>
           </div>
 
