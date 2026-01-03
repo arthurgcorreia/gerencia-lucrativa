@@ -459,11 +459,11 @@ export default function EstoquePage() {
   )
 
   return (
-    <div className="p-4 md:p-8">
-      <div className="flex items-center justify-between mb-8">
+    <div className="p-3 md:p-4 lg:p-8">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 md:mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Gestão de Estoque</h1>
-          <p className="text-gray-600 mt-2">Gerencie seus produtos e estoque</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Gestão de Estoque</h1>
+          <p className="text-gray-600 mt-1 md:mt-2 text-sm md:text-base">Gerencie seus produtos e estoque</p>
         </div>
         <button
           onClick={() => {
@@ -480,10 +480,11 @@ export default function EstoquePage() {
             })
             setShowModal(true)
           }}
-          className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+          className="flex items-center justify-center gap-2 px-4 md:px-6 py-2.5 md:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold text-sm md:text-base w-full sm:w-auto"
         >
-          <Plus className="w-5 h-5" />
-          Adicionar Produto
+          <Plus className="w-4 h-4 md:w-5 md:h-5" />
+          <span className="hidden sm:inline">Adicionar Produto</span>
+          <span className="sm:hidden">Adicionar</span>
         </button>
       </div>
 
@@ -501,7 +502,7 @@ export default function EstoquePage() {
         </div>
       </div>
 
-      {/* Products Table */}
+      {/* Products Table/Cards */}
       {loading ? (
         <div className="text-center py-12">Carregando...</div>
       ) : filteredProducts.length === 0 ? (
@@ -510,100 +511,184 @@ export default function EstoquePage() {
           <p className="text-gray-600">Nenhum produto encontrado</p>
         </div>
       ) : (
-        <div className="bg-white rounded-xl shadow-md overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="text-left py-4 px-6 font-semibold text-gray-700">Produto</th>
-                  <th className="text-left py-4 px-6 font-semibold text-gray-700">Código de Barras</th>
-                  <th className="text-left py-4 px-6 font-semibold text-gray-700">Preço</th>
-                  <th className="text-left py-4 px-6 font-semibold text-gray-700">Estoque</th>
-                  <th className="text-left py-4 px-6 font-semibold text-gray-700">Status</th>
-                  <th className="text-left py-4 px-6 font-semibold text-gray-700">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredProducts.map((product) => {
-                  const isLowStock = product.stock <= product.minStock
-                  return (
-                    <tr key={product.id} className="border-b border-gray-100 hover:bg-gray-50">
-                      <td className="py-4 px-6">
-                        <div className="font-medium text-gray-900">{product.name}</div>
-                        {product.description && (
-                          <div className="text-sm text-gray-500">{product.description}</div>
-                        )}
-                      </td>
-                      <td className="py-4 px-6">
-                        <div className="flex items-center gap-2">
-                          <Barcode className="w-4 h-4 text-gray-400" />
-                          <span className="font-mono text-sm">{product.barcode}</span>
-                        </div>
-                      </td>
-                      <td className="py-4 px-6">
-                        <span className="font-semibold">R$ {product.price.toFixed(2)}</span>
-                      </td>
-                      <td className="py-4 px-6">
-                        <div className="flex items-center gap-3">
-                          <span className={isLowStock ? 'text-red-600 font-semibold' : 'text-gray-900'}>
-                            {product.stock}
-                          </span>
-                          <span className="text-gray-500 text-sm">
-                            (mín: {product.minStock})
-                          </span>
-                          <div className="flex items-center gap-1 ml-2">
+        <>
+          {/* Desktop Table */}
+          <div className="hidden md:block bg-white rounded-xl shadow-md overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50 border-b border-gray-200">
+                  <tr>
+                    <th className="text-left py-4 px-6 font-semibold text-gray-700">Produto</th>
+                    <th className="text-left py-4 px-6 font-semibold text-gray-700">Código de Barras</th>
+                    <th className="text-left py-4 px-6 font-semibold text-gray-700">Preço</th>
+                    <th className="text-left py-4 px-6 font-semibold text-gray-700">Estoque</th>
+                    <th className="text-left py-4 px-6 font-semibold text-gray-700">Status</th>
+                    <th className="text-left py-4 px-6 font-semibold text-gray-700">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredProducts.map((product) => {
+                    const isLowStock = product.stock <= product.minStock
+                    return (
+                      <tr key={product.id} className="border-b border-gray-100 hover:bg-gray-50">
+                        <td className="py-4 px-6">
+                          <div className="font-medium text-gray-900">{product.name}</div>
+                          {product.description && (
+                            <div className="text-sm text-gray-500">{product.description}</div>
+                          )}
+                        </td>
+                        <td className="py-4 px-6">
+                          <div className="flex items-center gap-2">
+                            <Barcode className="w-4 h-4 text-gray-400" />
+                            <span className="font-mono text-sm">{product.barcode}</span>
+                          </div>
+                        </td>
+                        <td className="py-4 px-6">
+                          <span className="font-semibold">R$ {product.price.toFixed(2)}</span>
+                        </td>
+                        <td className="py-4 px-6">
+                          <div className="flex items-center gap-3">
+                            <span className={isLowStock ? 'text-red-600 font-semibold' : 'text-gray-900'}>
+                              {product.stock}
+                            </span>
+                            <span className="text-gray-500 text-sm">
+                              (mín: {product.minStock})
+                            </span>
+                            <div className="flex items-center gap-1 ml-2">
+                              <button
+                                onClick={() => handleStockUpdateClick(product, 'add')}
+                                className="p-1.5 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                                title="Adicionar ao estoque"
+                              >
+                                <Plus className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => handleStockUpdateClick(product, 'remove')}
+                                className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                title="Remover do estoque"
+                              >
+                                <Minus className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-4 px-6">
+                          {isLowStock ? (
+                            <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">
+                              Estoque Baixo
+                            </span>
+                          ) : (
+                            <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
+                              OK
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-4 px-6">
+                          <div className="flex items-center gap-2">
                             <button
-                              onClick={() => handleStockUpdateClick(product, 'add')}
-                              className="p-1.5 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                              title="Adicionar ao estoque"
+                              onClick={() => handleEdit(product)}
+                              className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                             >
-                              <Plus className="w-4 h-4" />
+                              <Edit className="w-4 h-4" />
                             </button>
                             <button
-                              onClick={() => handleStockUpdateClick(product, 'remove')}
-                              className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                              title="Remover do estoque"
+                              onClick={() => handleDeleteClick(product)}
+                              className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                              title="Excluir produto"
                             >
-                              <Minus className="w-4 h-4" />
+                              <Trash2 className="w-4 h-4" />
                             </button>
                           </div>
-                        </div>
-                      </td>
-                      <td className="py-4 px-6">
-                        {isLowStock ? (
-                          <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">
-                            Estoque Baixo
-                          </span>
-                        ) : (
-                          <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
-                            OK
-                          </span>
-                        )}
-                      </td>
-                      <td className="py-4 px-6">
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => handleEdit(product)}
-                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                          >
-                            <Edit className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteClick(product)}
-                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                            title="Excluir produto"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+
+          {/* Mobile Cards */}
+          <div className="md:hidden space-y-4">
+            {filteredProducts.map((product) => {
+              const isLowStock = product.stock <= product.minStock
+              return (
+                <div key={product.id} className="bg-white rounded-xl shadow-md p-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-gray-900 text-lg mb-1">{product.name}</h3>
+                      {product.description && (
+                        <p className="text-sm text-gray-500 mb-2 line-clamp-2">{product.description}</p>
+                      )}
+                      <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                        <Barcode className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                        <span className="font-mono truncate">{product.barcode}</span>
+                      </div>
+                    </div>
+                    {isLowStock ? (
+                      <span className="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium flex-shrink-0 ml-2">
+                        Baixo
+                      </span>
+                    ) : (
+                      <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium flex-shrink-0 ml-2">
+                        OK
+                      </span>
+                    )}
+                  </div>
+                  
+                  <div className="space-y-2 mb-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600 text-sm">Preço:</span>
+                      <span className="font-semibold text-gray-900">R$ {product.price.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600 text-sm">Estoque:</span>
+                      <div className="flex items-center gap-2">
+                        <span className={`font-semibold ${isLowStock ? 'text-red-600' : 'text-gray-900'}`}>
+                          {product.stock}
+                        </span>
+                        <span className="text-gray-500 text-xs">(mín: {product.minStock})</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
+                    <button
+                      onClick={() => handleStockUpdateClick(product, 'add')}
+                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors border border-green-200"
+                      title="Adicionar ao estoque"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span className="text-sm font-medium">Adicionar</span>
+                    </button>
+                    <button
+                      onClick={() => handleStockUpdateClick(product, 'remove')}
+                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-red-200"
+                      title="Remover do estoque"
+                    >
+                      <Minus className="w-4 h-4" />
+                      <span className="text-sm font-medium">Remover</span>
+                    </button>
+                    <button
+                      onClick={() => handleEdit(product)}
+                      className="px-3 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border border-blue-200"
+                      title="Editar"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteClick(product)}
+                      className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-red-200"
+                      title="Excluir"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </>
       )}
 
       {/* Modal */}
@@ -982,13 +1067,13 @@ export default function EstoquePage() {
                     setShowModal(false)
                     setEditingProduct(null)
                   }}
-                  className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-white hover:border-gray-400 transition-all font-semibold"
+                  className="px-4 md:px-6 py-2.5 md:py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-white hover:border-gray-400 transition-all font-semibold text-sm md:text-base"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-all font-semibold shadow-md hover:shadow-lg flex items-center gap-2"
+                  className="px-4 md:px-8 py-2.5 md:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-all font-semibold shadow-md hover:shadow-lg flex items-center justify-center gap-2 text-sm md:text-base"
                 >
                   {editingProduct ? (
                     <>
@@ -1042,17 +1127,17 @@ export default function EstoquePage() {
               </div>
             </div>
 
-            <div className="p-8">
-              <div className="mb-6">
-                <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
-                  <p className="text-sm text-gray-600">Estoque Atual</p>
-                  <p className="text-2xl font-bold text-blue-600 mt-1">
+            <div className="flex-1 overflow-y-auto p-4 md:p-8">
+              <div className="mb-4 md:mb-6">
+                <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-3 md:p-4">
+                  <p className="text-xs md:text-sm text-gray-600">Estoque Atual</p>
+                  <p className="text-xl md:text-2xl font-bold text-blue-600 mt-1">
                     {productToUpdateStock.stock} unidades
                   </p>
                 </div>
               </div>
 
-              <div className="mb-6">
+              <div className="mb-4 md:mb-6">
                 <label className="block text-sm font-semibold text-gray-900 mb-2">
                   Quantidade a {stockOperation === 'add' ? 'adicionar' : 'remover'}:
                 </label>
@@ -1061,21 +1146,21 @@ export default function EstoquePage() {
                   value={stockQuantity}
                   onChange={(e) => setStockQuantity(e.target.value)}
                   min="1"
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg font-semibold"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base md:text-lg font-semibold"
                   placeholder="Digite a quantidade"
                   autoFocus
                 />
                 {stockOperation === 'remove' && stockQuantity && parseInt(stockQuantity) > productToUpdateStock.stock && (
-                  <p className="mt-2 text-sm text-red-600">
+                  <p className="mt-2 text-xs md:text-sm text-red-600">
                     A quantidade não pode ser maior que o estoque atual ({productToUpdateStock.stock})
                   </p>
                 )}
               </div>
 
               {stockQuantity && !isNaN(parseInt(stockQuantity)) && parseInt(stockQuantity) > 0 && (
-                <div className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                  <p className="text-sm text-gray-600">Novo Estoque:</p>
-                  <p className="text-xl font-bold text-gray-900 mt-1">
+                <div className="mb-4 md:mb-6 p-3 md:p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                  <p className="text-xs md:text-sm text-gray-600">Novo Estoque:</p>
+                  <p className="text-lg md:text-xl font-bold text-gray-900 mt-1">
                     {stockOperation === 'add' 
                       ? productToUpdateStock.stock + parseInt(stockQuantity)
                       : Math.max(0, productToUpdateStock.stock - parseInt(stockQuantity))
@@ -1084,11 +1169,11 @@ export default function EstoquePage() {
                 </div>
               )}
 
-              <div className="flex gap-4 justify-end">
+              <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-end pt-4 border-t border-gray-200 md:border-0">
                 <button
                   type="button"
                   onClick={handleStockUpdateCancel}
-                  className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all font-semibold"
+                  className="px-4 md:px-6 py-2.5 md:py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all font-semibold text-sm md:text-base"
                 >
                   Cancelar
                 </button>
@@ -1101,7 +1186,7 @@ export default function EstoquePage() {
                     parseInt(stockQuantity) <= 0 ||
                     (stockOperation === 'remove' && parseInt(stockQuantity) > productToUpdateStock.stock)
                   }
-                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-all font-semibold shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 md:px-6 py-2.5 md:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-all font-semibold shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base"
                 >
                   {stockOperation === 'add' ? 'Adicionar' : 'Remover'}
                 </button>

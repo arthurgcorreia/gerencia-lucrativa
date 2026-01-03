@@ -23,8 +23,8 @@ export default function Notification({ message, show, onClose, duration = 3000 }
   if (!show) return null
 
   return (
-    <div className="fixed top-4 right-4 z-50 transform transition-all duration-300 ease-out">
-      <div className="bg-white rounded-xl shadow-2xl border border-green-200 p-4 flex items-center gap-3 min-w-[320px] max-w-md">
+    <div className="fixed top-4 right-2 md:right-4 left-2 md:left-auto z-50 transform transition-all duration-300 ease-out">
+      <div className="bg-white rounded-xl shadow-2xl border border-green-200 p-3 md:p-4 flex items-center gap-2 md:gap-3 max-w-md mx-auto">
         <div className="flex-shrink-0">
           <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
             <CheckCircle2 className="w-6 h-6 text-green-600" />

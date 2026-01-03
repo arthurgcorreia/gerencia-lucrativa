@@ -88,10 +88,10 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="p-4 md:p-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600 mt-2">Visão geral do seu negócio</p>
+    <div className="p-3 md:p-4 lg:p-8">
+      <div className="mb-4 md:mb-8">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Dashboard</h1>
+        <p className="text-gray-600 mt-1 md:mt-2 text-sm md:text-base">Visão geral do seu negócio</p>
       </div>
 
       {/* Stats Cards */}

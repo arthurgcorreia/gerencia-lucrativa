@@ -311,19 +311,19 @@ export default function VendasPage() {
   }
 
   return (
-    <div className="p-4 md:p-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Vendas</h1>
-        <p className="text-gray-600 mt-2">Realize vendas de forma rápida e eficiente</p>
+    <div className="p-3 md:p-4 lg:p-8">
+      <div className="mb-4 md:mb-8">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Vendas</h1>
+        <p className="text-gray-600 mt-1 md:mt-2 text-sm md:text-base">Realize vendas de forma rápida e eficiente</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column - Barcode Input and Cart */}
         <div className="lg:col-span-2 space-y-6">
           {/* Product Search */}
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <Search className="w-6 h-6 text-blue-600" />
+          <div className="bg-white rounded-xl shadow-md p-4 md:p-6">
+            <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-3 md:mb-4 flex items-center gap-2">
+              <Search className="w-5 h-5 md:w-6 md:h-6 text-blue-600" />
               Buscar Produto
             </h2>
             <form onSubmit={handleSearchSubmit} className="space-y-4">
@@ -552,14 +552,14 @@ export default function VendasPage() {
 
       {/* Payment Modal */}
       {showPaymentModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 p-0 md:p-4">
+          <div className="bg-white rounded-none md:rounded-2xl shadow-2xl max-w-2xl w-full h-full md:h-auto md:max-h-[90vh] overflow-hidden flex flex-col">
             {/* Header */}
-            <div className="px-8 py-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-white">
+            <div className="px-4 md:px-8 py-4 md:py-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-white">
               <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-3xl font-bold text-gray-900">Forma de Pagamento</h2>
-                  <p className="text-gray-600 mt-1 text-sm">Selecione como deseja receber o pagamento</p>
+                <div className="flex-1 min-w-0 pr-2">
+                  <h2 className="text-xl md:text-3xl font-bold text-gray-900">Forma de Pagamento</h2>
+                  <p className="text-gray-600 mt-1 text-xs md:text-sm">Selecione como deseja receber o pagamento</p>
                 </div>
                 <button
                   type="button"
