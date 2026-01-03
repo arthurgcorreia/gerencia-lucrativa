@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Package, Plus, Search, Edit, Trash2, Barcode, Camera } from 'lucide-react'
+import { Package, Plus, Search, Edit, Trash2, Barcode, Camera, X } from 'lucide-react'
 import BarcodeScanner from '@/components/BarcodeScanner'
 
 interface Product {
@@ -281,20 +281,42 @@ export default function EstoquePage() {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-200">
-              <h2 className="text-2xl font-bold text-gray-900">
-                {editingProduct ? 'Editar Produto' : 'Adicionar Produto'}
-              </h2>
-            </div>
-            <form onSubmit={handleSubmit} className="p-6 space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[95vh] overflow-hidden flex flex-col">
+            {/* Header */}
+            <div className="px-8 py-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-white">
+              <div className="flex items-center justify-between">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <h2 className="text-3xl font-bold text-gray-900">
+                    {editingProduct ? 'Editar Produto' : 'Adicionar Produto'}
+                  </h2>
+                  <p className="text-gray-600 mt-1 text-sm">
+                    {editingProduct ? 'Atualize as informações do produto' : 'Preencha os dados do novo produto'}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowModal(false)
+                    setEditingProduct(null)
+                  }}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-500 hover:text-gray-700"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+            </div>
+
+            {/* Form Content */}
+            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto">
+              <div className="p-8 space-y-6">
+                {/* Código de Barras Section */}
+                <div className="bg-blue-50 rounded-xl p-6 border border-blue-100">
+                  <label className="block text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                    <Barcode className="w-5 h-5 text-blue-600" />
                     Código de Barras *
                   </label>
-                  <div className="flex gap-2">
+                  <div className="flex gap-3">
                     <input
                       type="text"
                       value={formData.barcode}
@@ -304,20 +326,24 @@ export default function EstoquePage() {
                           handleBarcodeSearch(e.target.value)
                         }
                       }}
-                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white font-mono text-lg"
+                      placeholder="Digite ou escaneie o código"
                       required
                     />
                     <button
                       type="button"
                       onClick={() => setShowScanner(true)}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
-                      title="Escanear código de barras"
+                      className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-all flex items-center gap-2 font-semibold shadow-md hover:shadow-lg"
+                      title="Escanear código de barras com a câmera"
                     >
                       <Camera className="w-5 h-5" />
-                      <span className="hidden sm:inline">Escanear</span>
+                      <span>Escanear</span>
                     </button>
                   </div>
                 </div>
+
+                {/* Grid de campos */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Nome do Produto *
