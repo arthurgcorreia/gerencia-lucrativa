@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Package, Plus, Search, Edit, Trash2, Barcode } from 'lucide-react'
+import { Package, Plus, Search, Edit, Trash2, Barcode, Camera } from 'lucide-react'
+import BarcodeScanner from '@/components/BarcodeScanner'
 
 interface Product {
   id: string
@@ -27,6 +28,7 @@ export default function EstoquePage() {
     minStock: '5',
     description: '',
   })
+  const [showScanner, setShowScanner] = useState(false)
 
   useEffect(() => {
     fetchProducts()
@@ -121,12 +123,28 @@ export default function EstoquePage() {
             barcode: barcode,
             name: data.name,
             price: data.price?.toString() || '',
+            description: data.description || formData.description,
+          })
+        } else {
+          // Se não encontrou dados da API, apenas atualiza o código de barras
+          setFormData({
+            ...formData,
+            barcode: barcode,
           })
         }
       }
     } catch (error) {
       console.error('Error fetching barcode data:', error)
     }
+  }
+
+  const handleScan = (barcode: string) => {
+    setFormData({
+      ...formData,
+      barcode: barcode,
+    })
+    // Buscar informações do código de barras
+    handleBarcodeSearch(barcode)
   }
 
   const filteredProducts = products.filter(product =>
@@ -289,6 +307,15 @@ export default function EstoquePage() {
                       className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       required
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowScanner(true)}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                      title="Escanear código de barras"
+                    >
+                      <Camera className="w-5 h-5" />
+                      <span className="hidden sm:inline">Escanear</span>
+                    </button>
                   </div>
                 </div>
                 <div>
@@ -374,6 +401,13 @@ export default function EstoquePage() {
           </div>
         </div>
       )}
+
+      {/* Barcode Scanner Modal */}
+      <BarcodeScanner
+        isOpen={showScanner}
+        onClose={() => setShowScanner(false)}
+        onScan={handleScan}
+      />
     </div>
   )
 }
