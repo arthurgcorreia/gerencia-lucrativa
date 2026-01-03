@@ -67,6 +67,10 @@ export default function EstoquePage() {
   const [barcodeSuccess, setBarcodeSuccess] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [productToDelete, setProductToDelete] = useState<Product | null>(null)
+  const [showStockModal, setShowStockModal] = useState(false)
+  const [productToUpdateStock, setProductToUpdateStock] = useState<Product | null>(null)
+  const [stockQuantity, setStockQuantity] = useState('')
+  const [stockOperation, setStockOperation] = useState<'add' | 'remove'>('add')
 
   // Funções de validação
   const validateName = (name: string): string => {
