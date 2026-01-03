@@ -13,19 +13,34 @@ export async function GET(
     const apiUrl = process.env.BARCODE_API_URL || 'https://api.upcitemdb.com/prod/trial/lookup'
     
     try {
-      const response = await axios.get(`${apiUrl}?upc=${barcode}`)
+      const response = await axios.get(`${apiUrl}?upc=${barcode}`, {
+        timeout: 10000, // 10 segundos de timeout
+      })
+      
+      console.log('Barcode API Response:', JSON.stringify(response.data, null, 2))
       
       if (response.data?.items && response.data.items.length > 0) {
         const item = response.data.items[0]
-        return NextResponse.json({
-          name: item.title || item.description || '',
-          description: item.description || '',
-          price: null, // A API gratuita geralmente não fornece preços
-        })
+        const productName = item.title || item.description || item.brand || ''
+        const productDescription = item.description || item.brand || ''
+        
+        console.log('Product found:', { name: productName, description: productDescription })
+        
+        if (productName) {
+          return NextResponse.json({
+            name: productName,
+            description: productDescription,
+            price: item.lowest_price || null, // Tenta pegar o preço mais baixo se disponível
+          })
+        }
       }
-    } catch (apiError) {
+    } catch (apiError: any) {
       // Se a API externa falhar, retornamos vazio
-      console.log('Barcode API not available, returning empty')
+      console.error('Barcode API error:', apiError.message)
+      if (apiError.response) {
+        console.error('API Response status:', apiError.response.status)
+        console.error('API Response data:', apiError.response.data)
+      }
     }
 
     // Retornar vazio se não encontrar

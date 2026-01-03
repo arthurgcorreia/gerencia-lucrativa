@@ -307,10 +307,14 @@ export default function EstoquePage() {
 
     setBarcodeLoading(true)
     try {
+      console.log('Buscando código de barras:', barcode.trim())
       const response = await fetch(`/api/products/barcode/${barcode.trim()}`)
+      
       if (response.ok) {
         const data = await response.json()
-        if (data.name) {
+        console.log('Dados recebidos da API:', data)
+        
+        if (data.name && data.name.trim() !== '') {
           // Formata o preço se existir
           let formattedPrice = ''
           if (data.price && typeof data.price === 'number' && data.price > 0) {
@@ -318,39 +322,53 @@ export default function EstoquePage() {
           }
           
           // Atualiza o formulário com os dados encontrados
-          setFormData({
-            ...formData,
+          setFormData((prevFormData) => ({
+            ...prevFormData,
             barcode: barcode.trim(),
-            name: data.name,
+            name: data.name.trim(),
             price: formattedPrice,
-            description: data.description || formData.description,
-          })
+            description: data.description?.trim() || prevFormData.description,
+          }))
+          
+          console.log('Formulário atualizado com:', { name: data.name, price: formattedPrice })
           
           // Mostra feedback de sucesso
           setBarcodeSuccess(true)
           setTimeout(() => setBarcodeSuccess(false), 3000) // Remove após 3 segundos
           
           // Limpa erros dos campos preenchidos
-          const newErrors = { ...errors }
-          if (newErrors.name) delete newErrors.name
-          if (newErrors.barcode) delete newErrors.barcode
-          if (formattedPrice && newErrors.price) delete newErrors.price
-          setErrors(newErrors)
-        } else {
-          // Se não encontrou dados da API, apenas atualiza o código de barras
-          setFormData({
-            ...formData,
-            barcode: barcode.trim(),
+          setErrors((prevErrors) => {
+            const newErrors = { ...prevErrors }
+            if (newErrors.name) delete newErrors.name
+            if (newErrors.barcode) delete newErrors.barcode
+            if (formattedPrice && newErrors.price) delete newErrors.price
+            return newErrors
           })
+        } else {
+          console.log('Nome do produto não encontrado na resposta da API')
+          // Se não encontrou dados da API, apenas atualiza o código de barras
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            barcode: barcode.trim(),
+          }))
         }
+      } else {
+        console.error('Erro na resposta da API:', response.status, response.statusText)
+        const errorData = await response.json().catch(() => ({}))
+        console.error('Dados do erro:', errorData)
+        // Em caso de erro, apenas atualiza o código de barras
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          barcode: barcode.trim(),
+        }))
       }
     } catch (error) {
       console.error('Error fetching barcode data:', error)
       // Em caso de erro, apenas atualiza o código de barras
-      setFormData({
-        ...formData,
+      setFormData((prevFormData) => ({
+        ...prevFormData,
         barcode: barcode.trim(),
-      })
+      }))
     } finally {
       setBarcodeLoading(false)
     }
