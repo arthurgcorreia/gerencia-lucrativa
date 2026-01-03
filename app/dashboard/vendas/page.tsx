@@ -226,7 +226,7 @@ export default function VendasPage() {
         setShowSuccess(true)
         setTimeout(() => {
           setShowSuccess(false)
-          barcodeInputRef.current?.focus()
+          searchInputRef.current?.focus()
         }, 2000)
       } else {
         const data = await response.json()
