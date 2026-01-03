@@ -821,6 +821,13 @@ export default function VendasPage() {
           </div>
         </div>
       )}
+
+      {/* Notification */}
+      <Notification
+        message={notificationMessage}
+        show={showNotification}
+        onClose={() => setShowNotification(false)}
+      />
     </div>
   )
 }
