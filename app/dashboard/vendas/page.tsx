@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { ShoppingCart, Barcode, Plus, Minus, Trash2, Check, Camera, Search, X, AlertCircle } from 'lucide-react'
+import { ShoppingCart, Barcode, Plus, Minus, Trash2, Check, Camera, Search, X, AlertCircle, CreditCard, DollarSign, QrCode, Info } from 'lucide-react'
 import BarcodeScanner from '@/components/BarcodeScanner'
 
 interface CartItem {
@@ -25,12 +25,36 @@ export default function VendasPage() {
   const [total, setTotal] = useState(0)
   const [showSuccess, setShowSuccess] = useState(false)
   const [showScanner, setShowScanner] = useState(false)
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
+  const [paymentMethod, setPaymentMethod] = useState<'money' | 'card' | 'pix' | null>(null)
+  const [cardType, setCardType] = useState<'credit' | 'debit' | null>(null)
+  const [moneyReceived, setMoneyReceived] = useState('')
   const searchInputRef = useRef<HTMLInputElement>(null)
   const searchResultsRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     calculateTotal()
   }, [cart])
+
+  // Função para formatar valor monetário
+  const formatCurrency = (value: string): string => {
+    const numbers = value.replace(/\D/g, '')
+    if (!numbers) return ''
+    const amount = parseInt(numbers) / 100
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+      minimumFractionDigits: 2,
+    }).format(amount)
+  }
+
+  // Função para converter valor formatado para número
+  const parseCurrency = (value: string): string => {
+    const numbers = value.replace(/\D/g, '')
+    if (!numbers) return ''
+    const amount = parseInt(numbers) / 100
+    return amount.toString()
+  }
 
   useEffect(() => {
     // Focar no input de busca ao carregar
@@ -200,10 +224,35 @@ export default function VendasPage() {
     setCart(cart.filter(item => item.id !== itemId))
   }
 
-  const handleFinalizeSale = async () => {
+  const handleFinalizeSale = () => {
     if (cart.length === 0) {
       alert('Adicione produtos ao carrinho')
       return
+    }
+    // Abre modal de pagamento
+    setShowPaymentModal(true)
+    setPaymentMethod(null)
+    setCardType(null)
+    setMoneyReceived('')
+  }
+
+  const handlePaymentConfirm = async () => {
+    if (!paymentMethod) {
+      alert('Selecione uma forma de pagamento')
+      return
+    }
+
+    if (paymentMethod === 'card' && !cardType) {
+      alert('Selecione o tipo de cartão (crédito ou débito)')
+      return
+    }
+
+    if (paymentMethod === 'money') {
+      const received = parseFloat(parseCurrency(moneyReceived))
+      if (isNaN(received) || received < total) {
+        alert('Valor recebido deve ser maior ou igual ao total da venda')
+        return
+      }
     }
 
     setLoading(true)
@@ -218,11 +267,17 @@ export default function VendasPage() {
             price: item.price,
           })),
           total,
+          paymentMethod,
+          cardType: paymentMethod === 'card' ? cardType : null,
         }),
       })
 
       if (response.ok) {
         setCart([])
+        setShowPaymentModal(false)
+        setPaymentMethod(null)
+        setCardType(null)
+        setMoneyReceived('')
         setShowSuccess(true)
         setTimeout(() => {
           setShowSuccess(false)
@@ -238,6 +293,13 @@ export default function VendasPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const calculateChange = (): number => {
+    if (paymentMethod !== 'money' || !moneyReceived) return 0
+    const received = parseFloat(parseCurrency(moneyReceived))
+    if (isNaN(received)) return 0
+    return Math.max(0, received - total)
   }
 
   return (
