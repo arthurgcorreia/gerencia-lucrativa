@@ -57,8 +57,8 @@ export default function Home() {
             return plan
           })
           .sort((a: Plan, b: Plan) => {
-            // Ordenar: Basic, Basic+, Ultra
-            const order: Record<string, number> = { basic: 0, professional: 1, ultra: 2 }
+            // Ordenar: Basic, Ultra, Basic+ (Ultra no meio)
+            const order: Record<string, number> = { basic: 0, ultra: 1, professional: 2 }
             return (order[a.slug] || 999) - (order[b.slug] || 999)
           })
         setPlans(filteredPlans)
