@@ -69,9 +69,8 @@ export default function RegisterPage() {
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <div className="text-center mb-8">
-            <Link href="/" className="inline-flex items-center space-x-2 mb-4">
-              <Store className="w-8 h-8 text-blue-600" />
-              <span className="text-2xl font-bold text-blue-600">StockWave</span>
+            <Link href="/" className="inline-flex mb-4">
+              <StockWaveLogo size="md" variant="full" />
             </Link>
             <h1 className="text-3xl font-bold text-gray-900">Criar conta</h1>
             <p className="text-gray-600 mt-2">Comece sua jornada conosco</p>
