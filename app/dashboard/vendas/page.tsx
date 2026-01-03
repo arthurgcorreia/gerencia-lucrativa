@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { ShoppingCart, Barcode, Plus, Minus, Trash2, Check, Camera, Search, X, AlertCircle, CreditCard, DollarSign, QrCode, Info } from 'lucide-react'
 import BarcodeScanner from '@/components/BarcodeScanner'
+import Notification from '@/components/Notification'
 
 interface CartItem {
   id: string
@@ -24,6 +25,8 @@ export default function VendasPage() {
   const [searchNotFound, setSearchNotFound] = useState(false)
   const [total, setTotal] = useState(0)
   const [showSuccess, setShowSuccess] = useState(false)
+  const [notificationMessage, setNotificationMessage] = useState('')
+  const [showNotification, setShowNotification] = useState(false)
   const [showScanner, setShowScanner] = useState(false)
   const [showPaymentModal, setShowPaymentModal] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState<'money' | 'card' | 'pix' | null>(null)
@@ -238,19 +241,22 @@ export default function VendasPage() {
 
   const handlePaymentConfirm = async () => {
     if (!paymentMethod) {
-      alert('Selecione uma forma de pagamento')
+      setNotificationMessage('Selecione uma forma de pagamento')
+      setShowNotification(true)
       return
     }
 
     if (paymentMethod === 'card' && !cardType) {
-      alert('Selecione o tipo de cartão (crédito ou débito)')
+      setNotificationMessage('Selecione o tipo de cartão (crédito ou débito)')
+      setShowNotification(true)
       return
     }
 
     if (paymentMethod === 'money') {
       const received = parseFloat(parseCurrency(moneyReceived))
       if (isNaN(received) || received < total) {
-        alert('Valor recebido deve ser maior ou igual ao total da venda')
+        setNotificationMessage('Valor recebido deve ser maior ou igual ao total da venda')
+        setShowNotification(true)
         return
       }
     }
@@ -278,18 +284,20 @@ export default function VendasPage() {
         setPaymentMethod(null)
         setCardType(null)
         setMoneyReceived('')
-        setShowSuccess(true)
+        setNotificationMessage('Venda realizada com sucesso!')
+        setShowNotification(true)
         setTimeout(() => {
-          setShowSuccess(false)
           searchInputRef.current?.focus()
-        }, 2000)
+        }, 500)
       } else {
         const data = await response.json()
-        alert(data.error || 'Erro ao finalizar venda')
+        setNotificationMessage(data.error || 'Erro ao finalizar venda')
+        setShowNotification(true)
       }
     } catch (error) {
       console.error('Error finalizing sale:', error)
-      alert('Erro ao finalizar venda')
+      setNotificationMessage('Erro ao finalizar venda')
+      setShowNotification(true)
     } finally {
       setLoading(false)
     }
@@ -503,12 +511,6 @@ export default function VendasPage() {
               </div>
             </div>
 
-            {showSuccess && (
-              <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2 text-green-700">
-                <Check className="w-5 h-5" />
-                <span>Venda realizada com sucesso!</span>
-              </div>
-            )}
 
             <button
               onClick={handleFinalizeSale}

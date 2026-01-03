@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Package, Plus, Search, Edit, Trash2, Barcode, Camera, X, AlertCircle, Loader2, CheckCircle2 } from 'lucide-react'
+import { Package, Plus, Search, Edit, Trash2, Barcode, Camera, X, AlertCircle, Loader2, CheckCircle2, Minus } from 'lucide-react'
 import BarcodeScanner from '@/components/BarcodeScanner'
 
 interface Product {
@@ -314,6 +314,54 @@ export default function EstoquePage() {
     setProductToDelete(null)
   }
 
+  const handleStockUpdateClick = (product: Product, operation: 'add' | 'remove') => {
+    setProductToUpdateStock(product)
+    setStockOperation(operation)
+    setStockQuantity('')
+    setShowStockModal(true)
+  }
+
+  const handleStockUpdateCancel = () => {
+    setShowStockModal(false)
+    setProductToUpdateStock(null)
+    setStockQuantity('')
+  }
+
+  const handleStockUpdate = async () => {
+    if (!productToUpdateStock) return
+
+    const quantity = parseInt(stockQuantity)
+    if (isNaN(quantity) || quantity <= 0) {
+      alert('Digite uma quantidade válida')
+      return
+    }
+
+    const newStock = stockOperation === 'add' 
+      ? productToUpdateStock.stock + quantity
+      : Math.max(0, productToUpdateStock.stock - quantity)
+
+    try {
+      const response = await fetch(`/api/products/${productToUpdateStock.id}/stock`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ stock: newStock }),
+      })
+
+      if (response.ok) {
+        await fetchProducts()
+        setShowStockModal(false)
+        setProductToUpdateStock(null)
+        setStockQuantity('')
+      } else {
+        const data = await response.json()
+        alert(data.error || 'Erro ao atualizar estoque')
+      }
+    } catch (error) {
+      console.error('Error updating stock:', error)
+      alert('Erro ao atualizar estoque')
+    }
+  }
+
   const handleBarcodeSearch = async (barcode: string) => {
     // Limpa sucesso anterior
     setBarcodeSuccess(false)
@@ -492,12 +540,30 @@ export default function EstoquePage() {
                         <span className="font-semibold">R$ {product.price.toFixed(2)}</span>
                       </td>
                       <td className="py-4 px-6">
-                        <span className={isLowStock ? 'text-red-600 font-semibold' : 'text-gray-900'}>
-                          {product.stock}
-                        </span>
-                        <span className="text-gray-500 text-sm ml-2">
-                          (mín: {product.minStock})
-                        </span>
+                        <div className="flex items-center gap-3">
+                          <span className={isLowStock ? 'text-red-600 font-semibold' : 'text-gray-900'}>
+                            {product.stock}
+                          </span>
+                          <span className="text-gray-500 text-sm">
+                            (mín: {product.minStock})
+                          </span>
+                          <div className="flex items-center gap-1 ml-2">
+                            <button
+                              onClick={() => handleStockUpdateClick(product, 'add')}
+                              className="p-1.5 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                              title="Adicionar ao estoque"
+                            >
+                              <Plus className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleStockUpdateClick(product, 'remove')}
+                              className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                              title="Remover do estoque"
+                            >
+                              <Minus className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
                       </td>
                       <td className="py-4 px-6">
                         {isLowStock ? (
