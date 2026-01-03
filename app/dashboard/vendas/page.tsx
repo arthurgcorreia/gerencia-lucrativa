@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { ShoppingCart, Barcode, Plus, Minus, Trash2, Check, Camera, Search, X } from 'lucide-react'
+import { ShoppingCart, Barcode, Plus, Minus, Trash2, Check, Camera, Search, X, AlertCircle } from 'lucide-react'
 import BarcodeScanner from '@/components/BarcodeScanner'
 
 interface CartItem {
@@ -21,6 +21,7 @@ export default function VendasPage() {
   const [showResults, setShowResults] = useState(false)
   const [loading, setLoading] = useState(false)
   const [searchLoading, setSearchLoading] = useState(false)
+  const [searchNotFound, setSearchNotFound] = useState(false)
   const [total, setTotal] = useState(0)
   const [showSuccess, setShowSuccess] = useState(false)
   const [showScanner, setShowScanner] = useState(false)
@@ -61,20 +62,27 @@ export default function VendasPage() {
       if (searchInput.trim().length < 3) {
         setSearchResults([])
         setShowResults(false)
+        setSearchNotFound(false)
         return
       }
 
       setSearchLoading(true)
+      setSearchNotFound(false)
       try {
         const response = await fetch(`/api/products/search?q=${encodeURIComponent(searchInput.trim())}`)
         if (response.ok) {
           const products = await response.json()
           setSearchResults(products)
           setShowResults(products.length > 0)
+          // Mostra mensagem se não encontrou e tem pelo menos 3 caracteres
+          if (products.length === 0 && searchInput.trim().length >= 3) {
+            setSearchNotFound(true)
+          }
         }
       } catch (error) {
         console.error('Error searching products:', error)
         setSearchResults([])
+        setSearchNotFound(false)
       } finally {
         setSearchLoading(false)
       }
@@ -105,6 +113,7 @@ export default function VendasPage() {
 
   const searchAndAddProductByBarcode = async (barcode: string) => {
     setLoading(true)
+    setSearchNotFound(false)
     try {
       // Buscar produto por código de barras exato no estoque cadastrado
       const response = await fetch(`/api/products/barcode-search/${encodeURIComponent(barcode)}`)
@@ -113,14 +122,14 @@ export default function VendasPage() {
         if (product) {
           selectProduct(product)
         } else {
-          alert('Produto não encontrado no estoque')
+          setSearchNotFound(true)
         }
       } else {
-        alert('Produto não encontrado no estoque')
+        setSearchNotFound(true)
       }
     } catch (error) {
       console.error('Error fetching product:', error)
-      alert('Erro ao buscar produto')
+      setSearchNotFound(true)
     } finally {
       setLoading(false)
     }
@@ -131,6 +140,7 @@ export default function VendasPage() {
     setSearchInput('')
     setSearchResults([])
     setShowResults(false)
+    setSearchNotFound(false)
     searchInputRef.current?.focus()
   }
 
