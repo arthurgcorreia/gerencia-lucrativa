@@ -17,11 +17,14 @@ model User {
   storeName String?
   niche     String?
   onboardingCompleted Boolean @default(false)
+  currentPlanId String? @default("basic")
+  planExpiresAt DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
   products Product[]
   sales    Sale[]
+  payments Payment[]
 }
 
 model Product {
@@ -63,4 +66,40 @@ model SaleItem {
   
   @@index([saleId])
   @@index([productId])
+}
+
+model Plan {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  price       Float
+  duration    Int      // Duração em dias
+  features    Json     // Array de features em JSON
+  isPopular   Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  payments Payment[]
+}
+
+model Payment {
+  id            String   @id @default(cuid())
+  userId        String
+  planId        String
+  amount        Float
+  status        String   @default("pending") // pending, paid, failed, cancelled
+  paymentMethod String?  // credit_card, debit_card, pix, bank_transfer
+  transactionId String?
+  metadata      Json?    // Dados adicionais do pagamento
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan Plan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([planId])
+  @@index([status])
 }

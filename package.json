@@ -10,6 +10,7 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
+    "prisma:seed": "tsx prisma/seed.ts",
     "postinstall": "prisma generate"
   },
   "keywords": [],
@@ -43,6 +44,7 @@
     "autoprefixer": "^10.4.23",
     "postcss": "^8.5.6",
     "prisma": "^7.2.0",
-    "tailwindcss": "^3.4.0"
+    "tailwindcss": "^3.4.0",
+    "tsx": "^4.21.0"
   }
 }

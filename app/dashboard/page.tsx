@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Package, TrendingUp, AlertTriangle, ShoppingCart } from 'lucide-react'
+import { Package, TrendingUp, AlertTriangle, ShoppingCart, CreditCard, CheckCircle2, Clock, XCircle } from 'lucide-react'
 import Link from 'next/link'
 import {
   BarChart,
@@ -31,6 +31,7 @@ export default function DashboardPage() {
   const [bestSellers, setBestSellers] = useState<any[]>([])
   const [lowStockProducts, setLowStockProducts] = useState<any[]>([])
   const [salesData, setSalesData] = useState<any[]>([])
+  const [payments, setPayments] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -39,11 +40,12 @@ export default function DashboardPage() {
 
   const fetchDashboardData = async () => {
     try {
-      const [statsRes, bestSellersRes, lowStockRes, salesRes] = await Promise.all([
+      const [statsRes, bestSellersRes, lowStockRes, salesRes, paymentsRes] = await Promise.all([
         fetch('/api/dashboard/stats'),
         fetch('/api/dashboard/best-sellers'),
         fetch('/api/dashboard/low-stock'),
         fetch('/api/dashboard/sales-data'),
+        fetch('/api/payments'),
       ])
 
       if (statsRes.ok) {
@@ -64,6 +66,11 @@ export default function DashboardPage() {
       if (salesRes.ok) {
         const data = await salesRes.json()
         setSalesData(data)
+      }
+
+      if (paymentsRes.ok) {
+        const data = await paymentsRes.json()
+        setPayments(data)
       }
     } catch (error) {
       console.error('Error fetching dashboard data:', error)
@@ -168,7 +175,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Low Stock Products */}
-      <div className="bg-white rounded-xl shadow-md p-6">
+      <div className="bg-white rounded-xl shadow-md p-6 mb-8">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-gray-900">Produtos com Estoque Baixo</h2>
           <Link
@@ -208,6 +215,102 @@ export default function DashboardPage() {
         ) : (
           <div className="text-center py-12 text-gray-500">
             Nenhum produto com estoque baixo 🎉
+          </div>
+        )}
+      </div>
+
+      {/* Payment History */}
+      <div className="bg-white rounded-xl shadow-md p-6">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <CreditCard className="w-6 h-6 text-blue-600" />
+            <h2 className="text-xl font-bold text-gray-900">Histórico de Compras</h2>
+          </div>
+          <Link
+            href="/pricing"
+            className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+          >
+            Ver Planos →
+          </Link>
+        </div>
+        {payments.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-gray-200">
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700">Plano</th>
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700">Valor</th>
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700">Método</th>
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700">Status</th>
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700">Data</th>
+                </tr>
+              </thead>
+              <tbody>
+                {payments.map((payment) => (
+                  <tr key={payment.id} className="border-b border-gray-100 hover:bg-gray-50">
+                    <td className="py-3 px-4 font-medium">{payment.plan.name}</td>
+                    <td className="py-3 px-4">
+                      {payment.amount === 0 ? (
+                        <span className="text-green-600 font-semibold">Grátis</span>
+                      ) : (
+                        <span>R$ {payment.amount.toFixed(2)}</span>
+                      )}
+                    </td>
+                    <td className="py-3 px-4">
+                      <span className="text-gray-600 capitalize">
+                        {payment.paymentMethod || 'N/A'}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4">
+                      {payment.status === 'paid' && (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
+                          <CheckCircle2 className="w-3 h-3" />
+                          Pago
+                        </span>
+                      )}
+                      {payment.status === 'pending' && (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-medium">
+                          <Clock className="w-3 h-3" />
+                          Pendente
+                        </span>
+                      )}
+                      {payment.status === 'failed' && (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">
+                          <XCircle className="w-3 h-3" />
+                          Falhou
+                        </span>
+                      )}
+                      {payment.status === 'cancelled' && (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium">
+                          <XCircle className="w-3 h-3" />
+                          Cancelado
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-3 px-4 text-gray-600 text-sm">
+                      {new Date(payment.createdAt).toLocaleDateString('pt-BR', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <CreditCard className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <p className="text-gray-500 mb-4">Nenhuma compra registrada ainda</p>
+            <Link
+              href="/pricing"
+              className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            >
+              Ver Planos Disponíveis
+            </Link>
           </div>
         )}
       </div>

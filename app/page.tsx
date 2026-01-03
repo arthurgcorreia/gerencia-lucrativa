@@ -90,6 +90,12 @@ export default function Home() {
               Começar Agora
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
+            <Link
+              href="/pricing"
+              className="px-8 py-4 bg-white text-blue-600 rounded-xl border-2 border-blue-600 hover:bg-blue-50 hover:border-blue-700 transition-all transform hover:scale-105 font-semibold text-lg flex items-center gap-2 shadow-md"
+            >
+              Ver Planos
+            </Link>
             <button className="px-8 py-4 bg-white text-blue-600 rounded-xl border-2 border-blue-600 hover:bg-blue-50 hover:border-blue-700 transition-all transform hover:scale-105 font-semibold text-lg flex items-center gap-2 shadow-md">
               <Download className="w-5 h-5" />
               Baixar Aplicativo
