@@ -519,8 +519,9 @@ export default function EstoquePage() {
                             <Edit className="w-4 h-4" />
                           </button>
                           <button
-                            onClick={() => handleDelete(product.id)}
+                            onClick={() => handleDeleteClick(product)}
                             className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Excluir produto"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
