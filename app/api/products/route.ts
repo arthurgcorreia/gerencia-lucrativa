@@ -49,22 +49,27 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { name, barcode, price, stock, minStock, description } = body
 
-    // Verificar se código de barras já existe
-    const existing = await prisma.product.findUnique({
-      where: { barcode },
-    })
+    // Se barcode for fornecido, verificar se já existe
+    if (barcode && barcode.trim()) {
+      const existing = await prisma.product.findUnique({
+        where: { barcode: barcode.trim() },
+      })
 
-    if (existing && existing.userId !== decoded.userId) {
-      return NextResponse.json(
-        { error: 'Código de barras já cadastrado' },
-        { status: 400 }
-      )
+      if (existing && existing.userId !== decoded.userId) {
+        return NextResponse.json(
+          { error: 'Código de barras já cadastrado' },
+          { status: 400 }
+        )
+      }
     }
+
+    // Gerar um código único se barcode não for fornecido
+    const finalBarcode = barcode?.trim() || `AUTO-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
 
     const product = await prisma.product.create({
       data: {
         name,
-        barcode,
+        barcode: finalBarcode,
         price: parseFloat(price),
         stock: parseInt(stock),
         minStock: parseInt(minStock) || 5,

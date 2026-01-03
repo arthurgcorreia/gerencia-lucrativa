@@ -37,7 +37,16 @@ Quando solicitado, dê um nome à migração (ex: `init`)
 
 ## 6. Iniciar o Servidor
 ```bash
-npm run dev
+## Error Type
+Runtime Error
+
+## Error Message
+Cannot stop, scanner is not running or paused.
+
+
+    at BarcodeScanner (<anonymous>:null:null)
+
+Next.js version: 16.1.1 (Turbopack)
 ```
 
 ## 7. Acessar no Navegador

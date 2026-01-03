@@ -35,10 +35,11 @@ export async function PUT(
       )
     }
 
-    // Verificar se novo código de barras já existe
-    if (barcode !== existing.barcode) {
+    // Se barcode for fornecido e diferente do existente, verificar se já existe
+    const finalBarcode = barcode?.trim() || existing.barcode
+    if (finalBarcode !== existing.barcode && finalBarcode) {
       const barcodeExists = await prisma.product.findUnique({
-        where: { barcode },
+        where: { barcode: finalBarcode },
       })
       if (barcodeExists) {
         return NextResponse.json(
@@ -52,7 +53,7 @@ export async function PUT(
       where: { id: params.id },
       data: {
         name,
-        barcode,
+        barcode: finalBarcode,
         price: parseFloat(price),
         stock: parseInt(stock),
         minStock: parseInt(minStock) || 5,
