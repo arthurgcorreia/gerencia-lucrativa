@@ -286,6 +286,103 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Pricing Modal */}
+      {showPricingModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-5xl w-full my-8 relative">
+            {/* Close Button */}
+            <button
+              onClick={() => setShowPricingModal(false)}
+              className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500 hover:text-gray-700 z-10"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            {/* Header */}
+            <div className="px-6 md:px-8 py-6 md:py-8 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-white">
+              <div className="inline-flex items-center gap-2 mb-4 px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 rounded-full text-sm font-medium">
+                <Sparkles className="w-4 h-4" />
+                <span>Escolha o plano ideal</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                Planos e Preços
+              </h2>
+              <p className="text-gray-600">
+                Escolha o plano que melhor se adapta às necessidades do seu negócio
+              </p>
+            </div>
+
+            {/* Plans Grid */}
+            <div className="p-6 md:p-8">
+              {loadingPlans ? (
+                <div className="text-center py-12">
+                  <div className="animate-pulse text-blue-600">Carregando planos...</div>
+                </div>
+              ) : (
+                <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                  {plans.map((plan) => (
+                    <div
+                      key={plan.id}
+                      className={`relative bg-white rounded-2xl shadow-lg p-6 md:p-8 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl ${
+                        plan.isPopular
+                          ? 'border-4 border-blue-600 ring-4 ring-blue-100 scale-105'
+                          : 'border-2 border-gray-200'
+                      }`}
+                    >
+                      {plan.isPopular && (
+                        <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                          <span className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                            Mais Popular
+                          </span>
+                        </div>
+                      )}
+
+                      <div className="text-center mb-6">
+                        <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                        {plan.description && (
+                          <p className="text-gray-600 text-sm mb-4">{plan.description}</p>
+                        )}
+                        <div className="mb-4">
+                          <span className="text-5xl font-bold text-gray-900">
+                            {plan.price === 0 ? 'Grátis' : `R$ ${plan.price.toFixed(2)}`}
+                          </span>
+                          {plan.price > 0 && (
+                            <span className="text-gray-600 text-lg">/mês</span>
+                          )}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          Válido por {plan.duration} dias
+                        </div>
+                      </div>
+
+                      <ul className="space-y-3 mb-8">
+                        {(Array.isArray(plan.features) ? plan.features : []).map((feature: string, index: number) => (
+                          <li key={index} className="flex items-start gap-3">
+                            <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                            <span className="text-gray-700">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      <button
+                        onClick={() => handleSelectPlan(plan.slug)}
+                        className={`w-full py-3 px-6 rounded-xl font-semibold text-lg transition-all ${
+                          plan.isPopular
+                            ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 shadow-lg'
+                            : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                        }`}
+                      >
+                        {plan.price === 0 ? 'Começar Grátis' : 'Assinar Agora'}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12 px-4 relative z-10">
         <div className="container mx-auto text-center">
