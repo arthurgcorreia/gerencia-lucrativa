@@ -13,6 +13,7 @@ import {
   X,
   User
 } from 'lucide-react'
+import StockWaveLogo from './StockWaveLogo'
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
@@ -51,10 +52,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <div className="min-h-screen bg-gray-50">
       {/* Mobile Header */}
       <div className="lg:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between fixed top-0 left-0 right-0 z-40">
-        <div className="flex items-center space-x-2">
-          <Store className="w-6 h-6 text-blue-600" />
-          <span className="font-bold text-blue-600">StockWave</span>
-        </div>
+        <StockWaveLogo size="sm" variant="full" />
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
           className="p-2 rounded-lg hover:bg-gray-100"
@@ -72,10 +70,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         >
           <div className="h-full flex flex-col">
             <div className="p-6 border-b border-gray-200 hidden lg:block flex-shrink-0">
-              <div className="flex items-center space-x-2">
-                <Store className="w-8 h-8 text-blue-600" />
-                <span className="text-xl font-bold text-blue-600">StockWave</span>
-              </div>
+              <StockWaveLogo size="md" variant="full" />
             </div>
 
             <nav className="flex-1 p-4 space-y-2 overflow-y-auto min-h-0">

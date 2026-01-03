@@ -94,9 +94,8 @@ export default function Home() {
       {/* Header */}
       <header className="fixed top-0 w-full bg-white/80 backdrop-blur-md border-b border-blue-100 z-50">
         <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between gap-2">
-          <div className="flex items-center space-x-1.5 sm:space-x-2 min-w-0 flex-shrink">
-            <Store className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600 flex-shrink-0 animate-pulse" />
-            <span className="text-lg sm:text-xl md:text-2xl font-bold text-blue-600 truncate">StockWave</span>
+          <div className="flex items-center min-w-0 flex-shrink">
+            <StockWaveLogo size="md" variant="full" className="sm:scale-110" />
           </div>
           <div className="flex items-center gap-2 sm:gap-3 md:gap-4 flex-shrink-0">
             <Link 

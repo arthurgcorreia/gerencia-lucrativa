@@ -135,9 +135,8 @@ export default function PricingPage() {
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-md border-b border-blue-100">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2">
-            <Store className="w-8 h-8 text-blue-600" />
-            <span className="text-2xl font-bold text-blue-600">StockWave</span>
+          <Link href="/">
+            <StockWaveLogo size="md" variant="full" />
           </Link>
           <Link
             href="/login"
@@ -325,9 +324,8 @@ export default function PricingPage() {
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12 px-4">
         <div className="container mx-auto text-center">
-          <div className="flex items-center justify-center space-x-2 mb-4">
-            <Store className="w-6 h-6 text-blue-400" />
-            <span className="text-xl font-bold">StockWave</span>
+          <div className="flex items-center justify-center mb-4">
+            <StockWaveLogo size="md" variant="full" className="[&_span]:!text-white [&_svg_path]:stroke-blue-400 [&_svg_rect]:fill-blue-400 [&_svg_circle]:fill-blue-400" />
           </div>
           <p className="text-gray-400">
             © 2024 StockWave. Todos os direitos reservados.

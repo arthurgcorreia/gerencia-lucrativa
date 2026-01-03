@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Store, Mail, Lock, User, AlertCircle } from 'lucide-react'
+import StockWaveLogo from '@/components/StockWaveLogo'
 
 export default function RegisterPage() {
   const router = useRouter()
