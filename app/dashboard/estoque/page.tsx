@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Package, Plus, Search, Edit, Trash2, Barcode, Camera, X } from 'lucide-react'
+import { Package, Plus, Search, Edit, Trash2, Barcode, Camera, X, AlertCircle } from 'lucide-react'
 import BarcodeScanner from '@/components/BarcodeScanner'
 
 interface Product {
@@ -59,7 +59,136 @@ export default function EstoquePage() {
     
     return amount.toString()
   }
-  const [showScanner, setShowScanner] = useState(false)
+
+  // Funções de validação
+  const validateName = (name: string): string => {
+    if (!name || name.trim().length === 0) {
+      return 'Nome do produto é obrigatório'
+    }
+    if (name.trim().length < 3) {
+      return 'Nome deve ter pelo menos 3 caracteres'
+    }
+    if (name.trim().length > 200) {
+      return 'Nome deve ter no máximo 200 caracteres'
+    }
+    return ''
+  }
+
+  const validatePrice = (price: string): string => {
+    if (!price || price.trim() === '' || price === 'R$') {
+      return 'Preço é obrigatório'
+    }
+    const numericValue = parseFloat(parseCurrency(price))
+    if (isNaN(numericValue) || numericValue < 0) {
+      return 'Preço deve ser um valor válido'
+    }
+    if (numericValue < 0.01) {
+      return 'Preço deve ser no mínimo R$ 0,01'
+    }
+    if (numericValue > 999999.99) {
+      return 'Preço não pode ser maior que R$ 999.999,99'
+    }
+    return ''
+  }
+
+  const validateStock = (stock: string): string => {
+    if (!stock || stock.trim() === '') {
+      return 'Estoque é obrigatório'
+    }
+    const stockNum = parseInt(stock)
+    if (isNaN(stockNum)) {
+      return 'Estoque deve ser um número válido'
+    }
+    if (stockNum < 0) {
+      return 'Estoque não pode ser negativo'
+    }
+    if (stockNum > 999999) {
+      return 'Estoque não pode ser maior que 999.999'
+    }
+    if (!Number.isInteger(stockNum)) {
+      return 'Estoque deve ser um número inteiro'
+    }
+    return ''
+  }
+
+  const validateMinStock = (minStock: string): string => {
+    if (!minStock || minStock.trim() === '') {
+      return 'Estoque mínimo é obrigatório'
+    }
+    const minStockNum = parseInt(minStock)
+    if (isNaN(minStockNum)) {
+      return 'Estoque mínimo deve ser um número válido'
+    }
+    if (minStockNum < 0) {
+      return 'Estoque mínimo não pode ser negativo'
+    }
+    if (minStockNum > 999999) {
+      return 'Estoque mínimo não pode ser maior que 999.999'
+    }
+    if (!Number.isInteger(minStockNum)) {
+      return 'Estoque mínimo deve ser um número inteiro'
+    }
+    return ''
+  }
+
+  const validateBarcode = (barcode: string): string => {
+    if (!barcode || barcode.trim() === '') {
+      return '' // Opcional
+    }
+    const barcodeTrimmed = barcode.trim()
+    if (barcodeTrimmed.length < 8) {
+      return 'Código de barras deve ter pelo menos 8 caracteres'
+    }
+    if (barcodeTrimmed.length > 50) {
+      return 'Código de barras deve ter no máximo 50 caracteres'
+    }
+    // Valida se contém apenas números (padrão EAN/UPC)
+    if (!/^\d+$/.test(barcodeTrimmed)) {
+      return 'Código de barras deve conter apenas números'
+    }
+    return ''
+  }
+
+  const validateDescription = (description: string): string => {
+    if (description && description.length > 500) {
+      return 'Descrição deve ter no máximo 500 caracteres'
+    }
+    return ''
+  }
+
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {}
+    
+    const nameError = validateName(formData.name)
+    if (nameError) newErrors.name = nameError
+
+    const priceError = validatePrice(formData.price)
+    if (priceError) newErrors.price = priceError
+
+    const stockError = validateStock(formData.stock)
+    if (stockError) newErrors.stock = stockError
+
+    const minStockError = validateMinStock(formData.minStock)
+    if (minStockError) newErrors.minStock = minStockError
+
+    const barcodeError = validateBarcode(formData.barcode)
+    if (barcodeError) newErrors.barcode = barcodeError
+
+    const descriptionError = validateDescription(formData.description)
+    if (descriptionError) newErrors.description = descriptionError
+
+    // Validação adicional: estoque mínimo não pode ser maior que estoque atual
+    if (!stockError && !minStockError) {
+      const stockNum = parseInt(formData.stock)
+      const minStockNum = parseInt(formData.minStock)
+      if (minStockNum > stockNum) {
+        newErrors.minStock = 'Estoque mínimo não pode ser maior que o estoque atual'
+      }
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   useEffect(() => {
     fetchProducts()
@@ -81,6 +210,15 @@ export default function EstoquePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setSubmitError('')
+    setErrors({})
+
+    // Validar formulário antes de enviar
+    if (!validateForm()) {
+      setSubmitError('Por favor, corrija os erros no formulário')
+      return
+    }
+
     try {
       const url = editingProduct ? `/api/products/${editingProduct.id}` : '/api/products'
       const method = editingProduct ? 'PUT' : 'POST'
@@ -96,9 +234,13 @@ export default function EstoquePage() {
         }),
       })
 
+      const data = await response.json()
+
       if (response.ok) {
         setShowModal(false)
         setEditingProduct(null)
+        setErrors({})
+        setSubmitError('')
         setFormData({
           name: '',
           barcode: '',
@@ -108,9 +250,12 @@ export default function EstoquePage() {
           description: '',
         })
         fetchProducts()
+      } else {
+        setSubmitError(data.error || 'Erro ao salvar produto')
       }
     } catch (error) {
       console.error('Error saving product:', error)
+      setSubmitError('Erro ao conectar com o servidor')
     }
   }
 
@@ -124,6 +269,8 @@ export default function EstoquePage() {
       minStock: product.minStock.toString(),
       description: product.description || '',
     })
+    setErrors({})
+    setSubmitError('')
     setShowModal(true)
   }
 
@@ -381,11 +528,42 @@ export default function EstoquePage() {
                     <input
                       type="text"
                       value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white"
+                      onChange={(e) => {
+                        setFormData({ ...formData, name: e.target.value })
+                        // Limpa erro ao digitar
+                        if (errors.name) {
+                          setErrors({ ...errors, name: '' })
+                        }
+                      }}
+                      onBlur={() => {
+                        const error = validateName(formData.name)
+                        if (error) {
+                          setErrors({ ...errors, name: error })
+                        } else {
+                          const newErrors = { ...errors }
+                          delete newErrors.name
+                          setErrors(newErrors)
+                        }
+                      }}
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all bg-white ${
+                        errors.name
+                          ? 'border-red-500 focus:border-red-500'
+                          : 'border-gray-300 focus:border-blue-500'
+                      }`}
                       placeholder="Nome completo do produto"
-                      required
+                      maxLength={200}
                     />
+                    {errors.name && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                        <AlertCircle className="w-4 h-4" />
+                        {errors.name}
+                      </p>
+                    )}
+                    {!errors.name && formData.name && (
+                      <p className="mt-1 text-xs text-gray-500">
+                        {formData.name.length}/200 caracteres
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -399,18 +577,39 @@ export default function EstoquePage() {
                         onChange={(e) => {
                           const formatted = formatCurrency(e.target.value)
                           setFormData({ ...formData, price: formatted })
+                          // Limpa erro ao digitar
+                          if (errors.price) {
+                            setErrors({ ...errors, price: '' })
+                          }
                         }}
                         onBlur={(e) => {
                           // Garante que sempre tenha pelo menos R$ 0,00
                           if (!e.target.value || e.target.value === 'R$') {
                             setFormData({ ...formData, price: 'R$ 0,00' })
                           }
+                          const error = validatePrice(formData.price || 'R$ 0,00')
+                          if (error) {
+                            setErrors({ ...errors, price: error })
+                          } else {
+                            const newErrors = { ...errors }
+                            delete newErrors.price
+                            setErrors(newErrors)
+                          }
                         }}
-                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white font-semibold text-lg"
+                        className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all bg-white font-semibold text-lg ${
+                          errors.price
+                            ? 'border-red-500 focus:border-red-500'
+                            : 'border-gray-300 focus:border-blue-500'
+                        }`}
                         placeholder="R$ 0,00"
-                        required
                       />
                     </div>
+                    {errors.price && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                        <AlertCircle className="w-4 h-4" />
+                        {errors.price}
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -420,12 +619,50 @@ export default function EstoquePage() {
                     <input
                       type="number"
                       min="0"
+                      max="999999"
+                      step="1"
                       value={formData.stock}
-                      onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white"
+                      onChange={(e) => {
+                        const value = e.target.value
+                        // Permite apenas números inteiros
+                        if (value === '' || /^\d+$/.test(value)) {
+                          setFormData({ ...formData, stock: value })
+                          // Limpa erro ao digitar
+                          if (errors.stock) {
+                            setErrors({ ...errors, stock: '' })
+                          }
+                        }
+                      }}
+                      onBlur={() => {
+                        const error = validateStock(formData.stock)
+                        if (error) {
+                          setErrors({ ...errors, stock: error })
+                        } else {
+                          const newErrors = { ...errors }
+                          delete newErrors.stock
+                          setErrors(newErrors)
+                          // Revalida estoque mínimo se necessário
+                          if (formData.minStock) {
+                            const minStockError = validateMinStock(formData.minStock)
+                            if (!minStockError && parseInt(formData.minStock) > parseInt(formData.stock || '0')) {
+                              setErrors({ ...newErrors, minStock: 'Estoque mínimo não pode ser maior que o estoque atual' })
+                            }
+                          }
+                        }
+                      }}
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all bg-white ${
+                        errors.stock
+                          ? 'border-red-500 focus:border-red-500'
+                          : 'border-gray-300 focus:border-blue-500'
+                      }`}
                       placeholder="Quantidade em estoque"
-                      required
                     />
+                    {errors.stock && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                        <AlertCircle className="w-4 h-4" />
+                        {errors.stock}
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -435,12 +672,50 @@ export default function EstoquePage() {
                     <input
                       type="number"
                       min="0"
+                      max="999999"
+                      step="1"
                       value={formData.minStock}
-                      onChange={(e) => setFormData({ ...formData, minStock: e.target.value })}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white"
+                      onChange={(e) => {
+                        const value = e.target.value
+                        // Permite apenas números inteiros
+                        if (value === '' || /^\d+$/.test(value)) {
+                          setFormData({ ...formData, minStock: value })
+                          // Limpa erro ao digitar
+                          if (errors.minStock) {
+                            setErrors({ ...errors, minStock: '' })
+                          }
+                        }
+                      }}
+                      onBlur={() => {
+                        const error = validateMinStock(formData.minStock)
+                        if (error) {
+                          setErrors({ ...errors, minStock: error })
+                        } else {
+                          // Valida se não é maior que estoque atual
+                          const stockNum = parseInt(formData.stock || '0')
+                          const minStockNum = parseInt(formData.minStock)
+                          if (minStockNum > stockNum) {
+                            setErrors({ ...errors, minStock: 'Estoque mínimo não pode ser maior que o estoque atual' })
+                          } else {
+                            const newErrors = { ...errors }
+                            delete newErrors.minStock
+                            setErrors(newErrors)
+                          }
+                        }
+                      }}
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all bg-white ${
+                        errors.minStock
+                          ? 'border-red-500 focus:border-red-500'
+                          : 'border-gray-300 focus:border-blue-500'
+                      }`}
                       placeholder="Quantidade mínima"
-                      required
                     />
+                    {errors.minStock && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                        <AlertCircle className="w-4 h-4" />
+                        {errors.minStock}
+                      </p>
+                    )}
                   </div>
 
                   <div className="md:col-span-2">
@@ -449,11 +724,46 @@ export default function EstoquePage() {
                     </label>
                     <textarea
                       value={formData.description}
-                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white resize-none"
+                      onChange={(e) => {
+                        const value = e.target.value
+                        if (value.length <= 500) {
+                          setFormData({ ...formData, description: value })
+                          // Limpa erro ao digitar
+                          if (errors.description) {
+                            setErrors({ ...errors, description: '' })
+                          }
+                        }
+                      }}
+                      onBlur={() => {
+                        const error = validateDescription(formData.description)
+                        if (error) {
+                          setErrors({ ...errors, description: error })
+                        } else {
+                          const newErrors = { ...errors }
+                          delete newErrors.description
+                          setErrors(newErrors)
+                        }
+                      }}
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all bg-white resize-none ${
+                        errors.description
+                          ? 'border-red-500 focus:border-red-500'
+                          : 'border-gray-300 focus:border-blue-500'
+                      }`}
                       rows={4}
                       placeholder="Adicione uma descrição detalhada do produto (opcional)"
+                      maxLength={500}
                     />
+                    {errors.description && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                        <AlertCircle className="w-4 h-4" />
+                        {errors.description}
+                      </p>
+                    )}
+                    {!errors.description && (
+                      <p className="mt-1 text-xs text-gray-500">
+                        {formData.description.length}/500 caracteres
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
