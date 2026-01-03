@@ -21,9 +21,18 @@ export default function BarcodeScanner({ isOpen, onClose, onScan }: BarcodeScann
     }
 
     return () => {
-      stopScanning()
+      if (!isOpen) {
+        stopScanning()
+      }
     }
   }, [isOpen])
+
+  // Cleanup quando o componente desmonta
+  useEffect(() => {
+    return () => {
+      stopScanning()
+    }
+  }, [])
 
   const startScanning = async () => {
     try {
@@ -65,15 +74,30 @@ export default function BarcodeScanner({ isOpen, onClose, onScan }: BarcodeScann
           scannerRef.current = null
           setScanning(false)
         })
-        .catch((err) => {
-          console.error('Error stopping scanner:', err)
+        .catch((err: any) => {
+          // Ignora erros ao parar scanner (já estava parado ou não iniciado)
+          if (err && !err.message?.includes('not running')) {
+            console.error('Error stopping scanner:', err)
+          }
+          // Limpa mesmo se houver erro
+          scannerRef.current?.clear()
+          scannerRef.current = null
+          setScanning(false)
         })
+    } else {
+      setScanning(false)
     }
   }
 
-  const handleClose = () => {
-    stopScanning()
-    onClose()
+  const handleClose = async () => {
+    try {
+      stopScanning()
+    } catch (error) {
+      // Ignora erros ao fechar
+      console.log('Scanner cleanup:', error)
+    } finally {
+      onClose()
+    }
   }
 
   if (!isOpen) return null
