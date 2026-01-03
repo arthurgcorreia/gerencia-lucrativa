@@ -90,7 +90,7 @@ export default function EstoquePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          price: parseFloat(formData.price),
+          price: parseFloat(parseCurrency(formData.price)),
           stock: parseInt(formData.stock),
           minStock: parseInt(formData.minStock),
         }),
