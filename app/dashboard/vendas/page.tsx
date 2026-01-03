@@ -547,6 +547,272 @@ export default function VendasPage() {
         onClose={() => setShowScanner(false)}
         onScan={handleScan}
       />
+
+      {/* Payment Modal */}
+      {showPaymentModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+            {/* Header */}
+            <div className="px-8 py-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-white">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-3xl font-bold text-gray-900">Forma de Pagamento</h2>
+                  <p className="text-gray-600 mt-1 text-sm">Selecione como deseja receber o pagamento</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowPaymentModal(false)
+                    setPaymentMethod(null)
+                    setCardType(null)
+                    setMoneyReceived('')
+                  }}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-500 hover:text-gray-700"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto p-8">
+              <div className="mb-6">
+                <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600">Total da Venda</p>
+                      <p className="text-3xl font-bold text-blue-600 mt-1">
+                        R$ {total.toFixed(2).replace('.', ',')}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Payment Methods */}
+              <div className="space-y-4 mb-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Selecione a forma de pagamento:</h3>
+
+                {/* Dinheiro */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPaymentMethod('money')
+                    setCardType(null)
+                  }}
+                  className={`w-full p-4 border-2 rounded-xl transition-all text-left ${
+                    paymentMethod === 'money'
+                      ? 'border-blue-500 bg-blue-50'
+                      : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                  }`}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className={`p-3 rounded-lg ${
+                      paymentMethod === 'money' ? 'bg-blue-600' : 'bg-gray-200'
+                    }`}>
+                      <DollarSign className={`w-6 h-6 ${
+                        paymentMethod === 'money' ? 'text-white' : 'text-gray-600'
+                      }`} />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-semibold text-gray-900">Dinheiro</p>
+                      <p className="text-sm text-gray-600">Pagamento em espécie</p>
+                    </div>
+                    {paymentMethod === 'money' && (
+                      <Check className="w-6 h-6 text-blue-600" />
+                    )}
+                  </div>
+                </button>
+
+                {/* Cartão */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPaymentMethod('card')
+                    setMoneyReceived('')
+                  }}
+                  className={`w-full p-4 border-2 rounded-xl transition-all text-left ${
+                    paymentMethod === 'card'
+                      ? 'border-blue-500 bg-blue-50'
+                      : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                  }`}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className={`p-3 rounded-lg ${
+                      paymentMethod === 'card' ? 'bg-blue-600' : 'bg-gray-200'
+                    }`}>
+                      <CreditCard className={`w-6 h-6 ${
+                        paymentMethod === 'card' ? 'text-white' : 'text-gray-600'
+                      }`} />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-semibold text-gray-900">Cartão</p>
+                      <p className="text-sm text-gray-600">Crédito ou Débito</p>
+                    </div>
+                    {paymentMethod === 'card' && (
+                      <Check className="w-6 h-6 text-blue-600" />
+                    )}
+                  </div>
+                </button>
+
+                {/* PIX */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPaymentMethod('pix')
+                    setCardType(null)
+                    setMoneyReceived('')
+                  }}
+                  className={`w-full p-4 border-2 rounded-xl transition-all text-left ${
+                    paymentMethod === 'pix'
+                      ? 'border-blue-500 bg-blue-50'
+                      : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                  }`}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className={`p-3 rounded-lg ${
+                      paymentMethod === 'pix' ? 'bg-blue-600' : 'bg-gray-200'
+                    }`}>
+                      <QrCode className={`w-6 h-6 ${
+                        paymentMethod === 'pix' ? 'text-white' : 'text-gray-600'
+                      }`} />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-semibold text-gray-900">PIX</p>
+                      <p className="text-sm text-gray-600">Transferência instantânea</p>
+                    </div>
+                    {paymentMethod === 'pix' && (
+                      <Check className="w-6 h-6 text-blue-600" />
+                    )}
+                  </div>
+                </button>
+              </div>
+
+              {/* Card Type Selection (when card is selected) */}
+              {paymentMethod === 'card' && (
+                <div className="mb-6 p-6 bg-blue-50 border border-blue-200 rounded-xl">
+                  <h4 className="font-semibold text-gray-900 mb-4">Tipo de Cartão:</h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setCardType('credit')}
+                      className={`p-4 border-2 rounded-lg transition-all ${
+                        cardType === 'credit'
+                          ? 'border-blue-600 bg-blue-600 text-white'
+                          : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                      }`}
+                    >
+                      <CreditCard className="w-5 h-5 mx-auto mb-2" />
+                      <p className="font-semibold">Crédito</p>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCardType('debit')}
+                      className={`p-4 border-2 rounded-lg transition-all ${
+                        cardType === 'debit'
+                          ? 'border-blue-600 bg-blue-600 text-white'
+                          : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                      }`}
+                    >
+                      <CreditCard className="w-5 h-5 mx-auto mb-2" />
+                      <p className="font-semibold">Débito</p>
+                    </button>
+                  </div>
+
+                  {/* Machine Connection Info */}
+                  {cardType && (
+                    <div className="mt-6 p-4 bg-white border border-blue-300 rounded-lg">
+                      <div className="flex items-start gap-3">
+                        <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                        <div className="flex-1">
+                          <p className="font-semibold text-gray-900 mb-2">Conectar com Máquina de Cartão:</p>
+                          <div className="text-sm text-gray-700 space-y-2">
+                            <p><strong>Opção 1 - API/SDK:</strong></p>
+                            <ul className="list-disc list-inside ml-2 space-y-1">
+                              <li>Integrar com API de provedor (Cielo, PagSeguro, Rede, Stone, etc)</li>
+                              <li>Requer credenciais do provedor (client_id, client_secret)</li>
+                              <li>Processa pagamento via API REST</li>
+                            </ul>
+                            <p className="mt-3"><strong>Opção 2 - Conexão Física:</strong></p>
+                            <ul className="list-disc list-inside ml-2 space-y-1">
+                              <li>Cabo USB conectando máquina ao computador</li>
+                              <li>SDK do fabricante da máquina (ex: Ingenico, Verifone)</li>
+                              <li>Driver USB instalado</li>
+                              <li>Software de comunicação com máquina</li>
+                            </ul>
+                            <p className="mt-3 text-blue-600 font-medium">
+                              <strong>Nota:</strong> A integração física requer desenvolvimento específico baseado no modelo da máquina.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Money Input (when money is selected) */}
+              {paymentMethod === 'money' && (
+                <div className="mb-6 p-6 bg-blue-50 border border-blue-200 rounded-xl">
+                  <label className="block font-semibold text-gray-900 mb-3">
+                    Valor Recebido:
+                  </label>
+                  <input
+                    type="text"
+                    value={moneyReceived}
+                    onChange={(e) => {
+                      const value = e.target.value
+                      setMoneyReceived(formatCurrency(value))
+                    }}
+                    placeholder="R$ 0,00"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-2xl font-bold"
+                    autoFocus
+                  />
+                  {moneyReceived && (
+                    <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                      <p className="text-sm text-gray-600">Troco:</p>
+                      <p className="text-2xl font-bold text-green-600">
+                        R$ {calculateChange().toFixed(2).replace('.', ',')}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="px-8 py-6 border-t border-gray-200 bg-gray-50 flex items-center justify-end gap-4">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowPaymentModal(false)
+                  setPaymentMethod(null)
+                  setCardType(null)
+                  setMoneyReceived('')
+                }}
+                className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-white hover:border-gray-400 transition-all font-semibold"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={handlePaymentConfirm}
+                disabled={!paymentMethod || (paymentMethod === 'card' && !cardType) || loading}
+                className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 active:bg-green-800 transition-all font-semibold shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                {loading ? (
+                  'Processando...'
+                ) : (
+                  <>
+                    <Check className="w-5 h-5" />
+                    Confirmar Pagamento
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
