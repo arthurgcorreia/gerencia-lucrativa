@@ -301,22 +301,22 @@ export default function Home() {
           }}
         >
           <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full my-4 relative">
-            {/* Close Button */}
-            <button
-              onClick={() => setShowPricingModal(false)}
-              className="absolute -top-3 -right-3 p-2 bg-white hover:bg-gray-100 rounded-full transition-colors text-gray-600 hover:text-gray-900 z-20 shadow-lg border-2 border-gray-200"
-              aria-label="Fechar modal"
-            >
-              <X className="w-6 h-6" />
-            </button>
+            {/* Header com Close Button */}
+            <div className="px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-white relative">
+              {/* Close Button */}
+              <button
+                onClick={() => setShowPricingModal(false)}
+                className="absolute top-4 right-4 p-2 bg-white hover:bg-gray-100 rounded-full transition-colors text-gray-600 hover:text-gray-900 shadow-md border border-gray-200"
+                aria-label="Fechar modal"
+              >
+                <X className="w-5 h-5" />
+              </button>
 
-            {/* Header */}
-            <div className="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-white">
               <div className="inline-flex items-center gap-2 mb-3 px-3 py-1.5 bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 rounded-full text-xs font-medium">
                 <Sparkles className="w-3 h-3" />
                 <span>Escolha o plano ideal</span>
               </div>
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2 pr-12">
                 Planos e Preços
               </h2>
               <p className="text-sm text-gray-600">
