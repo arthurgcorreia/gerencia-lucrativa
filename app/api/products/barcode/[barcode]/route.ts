@@ -3,10 +3,10 @@ import axios from 'axios'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { barcode: string } }
+  { params }: { params: Promise<{ barcode: string }> }
 ) {
   try {
-    const barcode = params.barcode
+    const { barcode } = await params
 
     // Integração com API de código de barras (exemplo: UPCItemDB)
     // Você pode substituir por outra API de sua escolha

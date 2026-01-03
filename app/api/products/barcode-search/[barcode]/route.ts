@@ -5,7 +5,7 @@ import { cookies } from 'next/headers'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { barcode: string } }
+  { params }: { params: Promise<{ barcode: string }> }
 ) {
   try {
     const cookieStore = await cookies()
@@ -20,7 +20,8 @@ export async function GET(
       return NextResponse.json({ error: 'Token inválido' }, { status: 401 })
     }
 
-    const barcode = params.barcode.trim()
+    const { barcode: barcodeParam } = await params
+    const barcode = barcodeParam.trim()
 
     // Busca exata por código de barras (case sensitive para garantir correspondência exata)
     const product = await prisma.product.findFirst({
