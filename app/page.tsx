@@ -46,16 +46,20 @@ export default function Home() {
       const response = await fetch('/api/plans')
       if (response.ok) {
         const data = await response.json()
-        // Filtrar apenas os 2 primeiros planos (Básico e Basic+)
-        // Assumindo que basic+ é o profissional
+        // Filtrar os 3 planos: Básico, Ultra, Basic+ (professional)
         const filteredPlans = data
-          .filter((plan: Plan) => plan.slug === 'basic' || plan.slug === 'professional')
+          .filter((plan: Plan) => plan.slug === 'basic' || plan.slug === 'ultra' || plan.slug === 'professional')
           .map((plan: Plan) => {
             // Renomear professional para Basic+
             if (plan.slug === 'professional') {
               return { ...plan, name: 'Basic+' }
             }
             return plan
+          })
+          .sort((a: Plan, b: Plan) => {
+            // Ordenar: Basic, Basic+, Ultra
+            const order: Record<string, number> = { basic: 0, professional: 1, ultra: 2 }
+            return (order[a.slug] || 999) - (order[b.slug] || 999)
           })
         setPlans(filteredPlans)
       }
