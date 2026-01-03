@@ -5,7 +5,7 @@ import { cookies } from 'next/headers'
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const cookieStore = await cookies()
@@ -20,12 +20,13 @@ export async function PUT(
       return NextResponse.json({ error: 'Token inválido' }, { status: 401 })
     }
 
+    const { id } = await params
     const body = await request.json()
     const { name, barcode, price, stock, minStock, description } = body
 
     // Verificar se produto pertence ao usuário
     const existing = await prisma.product.findFirst({
-      where: { id: params.id, userId: decoded.userId },
+      where: { id, userId: decoded.userId },
     })
 
     if (!existing) {
@@ -50,7 +51,7 @@ export async function PUT(
     }
 
     const product = await prisma.product.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         name,
         barcode: finalBarcode,
@@ -79,7 +80,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const cookieStore = await cookies()
@@ -94,9 +95,11 @@ export async function DELETE(
       return NextResponse.json({ error: 'Token inválido' }, { status: 401 })
     }
 
+    const { id } = await params
+
     // Verificar se produto pertence ao usuário
     const existing = await prisma.product.findFirst({
-      where: { id: params.id, userId: decoded.userId },
+      where: { id, userId: decoded.userId },
     })
 
     if (!existing) {
@@ -108,7 +111,7 @@ export async function DELETE(
 
     // Deletar o produto (o Prisma deve lidar com CASCADE automaticamente)
     await prisma.product.delete({
-      where: { id: params.id },
+      where: { id },
     })
 
     return NextResponse.json({ message: 'Produto excluído com sucesso' })
