@@ -342,6 +342,12 @@ export default function VendasPage() {
                 {loading ? 'Buscando...' : 'Adicionar'}
               </button>
               </div>
+              {searchNotFound && !searchLoading && searchInput.trim().length >= 3 && (
+                <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg flex items-center gap-2 text-yellow-800">
+                  <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                  <span className="text-sm font-medium">Nenhum produto encontrado no estoque com este termo.</span>
+                </div>
+              )}
             </form>
           </div>
 
