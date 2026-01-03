@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Package, Plus, Search, Edit, Trash2, Barcode, Camera, X, AlertCircle } from 'lucide-react'
+import { Package, Plus, Search, Edit, Trash2, Barcode, Camera, X, AlertCircle, Loader2, CheckCircle2 } from 'lucide-react'
 import BarcodeScanner from '@/components/BarcodeScanner'
 
 interface Product {
