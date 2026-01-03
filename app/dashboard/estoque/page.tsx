@@ -314,7 +314,7 @@ export default function EstoquePage() {
                 <div className="bg-blue-50 rounded-xl p-6 border border-blue-100">
                   <label className="block text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
                     <Barcode className="w-5 h-5 text-blue-600" />
-                    Código de Barras *
+                    Código de Barras
                   </label>
                   <div className="flex gap-3">
                     <input
@@ -327,8 +327,7 @@ export default function EstoquePage() {
                         }
                       }}
                       className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white font-mono text-lg"
-                      placeholder="Digite ou escaneie o código"
-                      required
+                      placeholder="Digite ou escaneie o código (opcional)"
                     />
                     <button
                       type="button"
