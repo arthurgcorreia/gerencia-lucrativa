@@ -582,7 +582,10 @@ export default function VendasPage() {
                     <div>
                       <p className="text-sm text-gray-600">Total da Venda</p>
                       <p className="text-3xl font-bold text-blue-600 mt-1">
-                        R$ {total.toFixed(2).replace('.', ',')}
+                        {new Intl.NumberFormat('pt-BR', {
+                          style: 'currency',
+                          currency: 'BRL',
+                        }).format(total)}
                       </p>
                     </div>
                   </div>
@@ -772,7 +775,10 @@ export default function VendasPage() {
                     <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
                       <p className="text-sm text-gray-600">Troco:</p>
                       <p className="text-2xl font-bold text-green-600">
-                        R$ {calculateChange().toFixed(2).replace('.', ',')}
+                        {new Intl.NumberFormat('pt-BR', {
+                          style: 'currency',
+                          currency: 'BRL',
+                        }).format(calculateChange())}
                       </p>
                     </div>
                   )}
