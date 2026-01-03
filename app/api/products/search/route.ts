@@ -64,7 +64,7 @@ export async function GET(request: NextRequest) {
     // Limita a 10 resultados
     const products = sortedProducts.slice(0, 10)
 
-    return NextResponse.json(sortedProducts)
+    return NextResponse.json(products)
   } catch (error) {
     console.error('Error searching products:', error)
     return NextResponse.json(
