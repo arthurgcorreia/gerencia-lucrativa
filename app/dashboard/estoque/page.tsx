@@ -60,6 +60,10 @@ export default function EstoquePage() {
     return amount.toString()
   }
 
+  const [showScanner, setShowScanner] = useState(false)
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [submitError, setSubmitError] = useState('')
+
   // Funções de validação
   const validateName = (name: string): string => {
     if (!name || name.trim().length === 0) {
@@ -340,6 +344,8 @@ export default function EstoquePage() {
         <button
           onClick={() => {
             setEditingProduct(null)
+            setErrors({})
+            setSubmitError('')
             setFormData({
               name: '',
               barcode: '',
