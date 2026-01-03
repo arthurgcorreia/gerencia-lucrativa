@@ -43,10 +43,37 @@ export async function POST(request: NextRequest) {
     })
 
     return NextResponse.json({ user }, { status: 201 })
-  } catch (error) {
+  } catch (error: any) {
     console.error('Registration error:', error)
+    
+    // Log detalhado para debug em produção
+    if (process.env.NODE_ENV === 'production') {
+      console.error('Registration error details:', {
+        message: error?.message,
+        code: error?.code,
+        meta: error?.meta,
+        stack: error?.stack,
+      })
+    }
+
+    // Retornar erro mais específico se possível
+    if (error?.code === 'P2002') {
+      return NextResponse.json(
+        { error: 'Email já cadastrado' },
+        { status: 400 }
+      )
+    }
+
+    // Se for erro de conexão com banco
+    if (error?.message?.includes('DATABASE_URL') || error?.message?.includes('connection')) {
+      return NextResponse.json(
+        { error: 'Erro de conexão com o banco de dados. Por favor, tente novamente mais tarde.' },
+        { status: 503 }
+      )
+    }
+
     return NextResponse.json(
-      { error: 'Erro ao criar conta' },
+      { error: 'Erro ao criar conta. Por favor, tente novamente.' },
       { status: 500 }
     )
   }

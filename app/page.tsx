@@ -21,21 +21,21 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
       {/* Header */}
       <header className="fixed top-0 w-full bg-white/80 backdrop-blur-md border-b border-blue-100 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Store className="w-8 h-8 text-blue-600" />
-            <span className="text-2xl font-bold text-blue-600">GerenciaLucrativa</span>
+        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between gap-2">
+          <div className="flex items-center space-x-1.5 sm:space-x-2 min-w-0 flex-shrink">
+            <Store className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600 flex-shrink-0" />
+            <span className="text-lg sm:text-xl md:text-2xl font-bold text-blue-600 truncate">GerenciaLucrativa</span>
           </div>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-2 sm:gap-3 md:gap-4 flex-shrink-0">
             <Link 
               href="/login" 
-              className="px-4 py-2 text-blue-600 hover:text-blue-700 font-medium transition-colors"
+              className="px-3 py-1.5 sm:px-4 sm:py-2 text-blue-600 hover:text-blue-700 font-medium transition-colors text-sm sm:text-base whitespace-nowrap"
             >
               Entrar
             </Link>
             <Link 
               href="/register" 
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              className="px-4 py-1.5 sm:px-5 md:px-6 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm sm:text-base whitespace-nowrap"
             >
               Começar
             </Link>
