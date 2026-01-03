@@ -106,15 +106,40 @@ export async function DELETE(
       )
     }
 
+    // Deletar o produto (o Prisma deve lidar com CASCADE automaticamente)
     await prisma.product.delete({
       where: { id: params.id },
     })
 
     return NextResponse.json({ message: 'Produto excluído com sucesso' })
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error deleting product:', error)
+    console.error('Error details:', {
+      message: error.message,
+      code: error.code,
+      meta: error.meta,
+    })
+    
+    // Tratamento específico para erros conhecidos
+    if (error.code === 'P2025') {
+      return NextResponse.json(
+        { error: 'Produto não encontrado' },
+        { status: 404 }
+      )
+    }
+    
+    if (error.code === 'P2003') {
+      return NextResponse.json(
+        { error: 'Não é possível excluir produto que possui vendas associadas' },
+        { status: 400 }
+      )
+    }
+
     return NextResponse.json(
-      { error: 'Erro ao excluir produto' },
+      { 
+        error: 'Erro ao excluir produto',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      },
       { status: 500 }
     )
   }
