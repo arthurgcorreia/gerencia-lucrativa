@@ -1011,6 +1011,102 @@ export default function EstoquePage() {
         onScan={handleScan}
       />
 
+      {/* Stock Update Modal */}
+      {showStockModal && productToUpdateStock && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full">
+            <div className="px-8 py-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-white">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    {stockOperation === 'add' ? 'Adicionar ao Estoque' : 'Remover do Estoque'}
+                  </h2>
+                  <p className="text-gray-600 mt-1 text-sm">
+                    {stockOperation === 'add' 
+                      ? `Adicionar quantidade ao produto: ${productToUpdateStock.name}`
+                      : `Remover quantidade do produto: ${productToUpdateStock.name}`
+                    }
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleStockUpdateCancel}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-500 hover:text-gray-700"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+            </div>
+
+            <div className="p-8">
+              <div className="mb-6">
+                <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
+                  <p className="text-sm text-gray-600">Estoque Atual</p>
+                  <p className="text-2xl font-bold text-blue-600 mt-1">
+                    {productToUpdateStock.stock} unidades
+                  </p>
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Quantidade a {stockOperation === 'add' ? 'adicionar' : 'remover'}:
+                </label>
+                <input
+                  type="number"
+                  value={stockQuantity}
+                  onChange={(e) => setStockQuantity(e.target.value)}
+                  min="1"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg font-semibold"
+                  placeholder="Digite a quantidade"
+                  autoFocus
+                />
+                {stockOperation === 'remove' && stockQuantity && parseInt(stockQuantity) > productToUpdateStock.stock && (
+                  <p className="mt-2 text-sm text-red-600">
+                    A quantidade não pode ser maior que o estoque atual ({productToUpdateStock.stock})
+                  </p>
+                )}
+              </div>
+
+              {stockQuantity && !isNaN(parseInt(stockQuantity)) && parseInt(stockQuantity) > 0 && (
+                <div className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                  <p className="text-sm text-gray-600">Novo Estoque:</p>
+                  <p className="text-xl font-bold text-gray-900 mt-1">
+                    {stockOperation === 'add' 
+                      ? productToUpdateStock.stock + parseInt(stockQuantity)
+                      : Math.max(0, productToUpdateStock.stock - parseInt(stockQuantity))
+                    } unidades
+                  </p>
+                </div>
+              )}
+
+              <div className="flex gap-4 justify-end">
+                <button
+                  type="button"
+                  onClick={handleStockUpdateCancel}
+                  className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all font-semibold"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={handleStockUpdate}
+                  disabled={
+                    !stockQuantity || 
+                    isNaN(parseInt(stockQuantity)) || 
+                    parseInt(stockQuantity) <= 0 ||
+                    (stockOperation === 'remove' && parseInt(stockQuantity) > productToUpdateStock.stock)
+                  }
+                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-all font-semibold shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {stockOperation === 'add' ? 'Adicionar' : 'Remover'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Delete Confirmation Modal */}
       {showDeleteModal && productToDelete && (
         <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
