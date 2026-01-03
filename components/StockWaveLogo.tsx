@@ -14,17 +14,17 @@ export default function StockWaveLogo({
   variant = 'full'
 }: StockWaveLogoProps) {
   const sizeClasses = {
-    sm: 'h-8 w-auto',
-    md: 'h-10 w-auto',
-    lg: 'h-14 w-auto',
-    xl: 'h-16 w-auto'
+    sm: 'h-10 w-auto',
+    md: 'h-12 w-auto',
+    lg: 'h-16 w-auto',
+    xl: 'h-20 w-auto'
   }
 
   const iconSizeClasses = {
-    sm: 'h-6 w-6',
-    md: 'h-8 w-8',
-    lg: 'h-12 w-12',
-    xl: 'h-16 w-16'
+    sm: 'h-8 w-8',
+    md: 'h-10 w-10',
+    lg: 'h-14 w-14',
+    xl: 'h-18 w-18'
   }
 
   const sizeClass = sizeClasses[size]
