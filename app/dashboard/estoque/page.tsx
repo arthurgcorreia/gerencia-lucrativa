@@ -494,6 +494,14 @@ export default function EstoquePage() {
             {/* Form Content */}
             <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto">
               <div className="p-8 space-y-6">
+                {/* Mensagem de erro geral */}
+                {submitError && (
+                  <div className="p-4 bg-red-50 border-2 border-red-200 rounded-lg flex items-center gap-2 text-red-700">
+                    <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                    <span className="font-medium">{submitError}</span>
+                  </div>
+                )}
+
                 {/* Código de Barras Section */}
                 <div className="bg-blue-50 rounded-xl p-6 border border-blue-100">
                   <label className="block text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
@@ -501,18 +509,45 @@ export default function EstoquePage() {
                     Código de Barras
                   </label>
                   <div className="flex gap-3">
-                    <input
-                      type="text"
-                      value={formData.barcode}
-                      onChange={(e) => {
-                        setFormData({ ...formData, barcode: e.target.value })
-                        if (e.target.value.length >= 8) {
-                          handleBarcodeSearch(e.target.value)
-                        }
-                      }}
-                      className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white font-mono text-lg"
-                      placeholder="Digite ou escaneie o código (opcional)"
-                    />
+                    <div className="flex-1">
+                      <input
+                        type="text"
+                        value={formData.barcode}
+                        onChange={(e) => {
+                          const value = e.target.value
+                          setFormData({ ...formData, barcode: value })
+                          // Limpa erro ao digitar
+                          if (errors.barcode) {
+                            setErrors({ ...errors, barcode: '' })
+                          }
+                          if (value.length >= 8) {
+                            handleBarcodeSearch(value)
+                          }
+                        }}
+                        onBlur={() => {
+                          const error = validateBarcode(formData.barcode)
+                          if (error) {
+                            setErrors({ ...errors, barcode: error })
+                          } else {
+                            const newErrors = { ...errors }
+                            delete newErrors.barcode
+                            setErrors(newErrors)
+                          }
+                        }}
+                        className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all bg-white font-mono text-lg ${
+                          errors.barcode
+                            ? 'border-red-500 focus:border-red-500'
+                            : 'border-gray-300 focus:border-blue-500'
+                        }`}
+                        placeholder="Digite ou escaneie o código (opcional)"
+                      />
+                      {errors.barcode && (
+                        <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                          <AlertCircle className="w-4 h-4" />
+                          {errors.barcode}
+                        </p>
+                      )}
+                    </div>
                     <button
                       type="button"
                       onClick={() => setShowScanner(true)}
