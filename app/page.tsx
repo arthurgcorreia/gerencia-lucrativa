@@ -13,15 +13,70 @@ import {
   ArrowRight,
   CheckCircle2,
   Rocket,
-  Sparkles
+  Sparkles,
+  X,
+  Check
 } from 'lucide-react'
+
+interface Plan {
+  id: string
+  name: string
+  slug: string
+  description: string | null
+  price: number
+  duration: number
+  features: string[]
+  isPopular: boolean
+  isActive: boolean
+}
 
 export default function Home() {
   const [mounted, setMounted] = useState(false)
+  const [showPricingModal, setShowPricingModal] = useState(false)
+  const [plans, setPlans] = useState<Plan[]>([])
+  const [loadingPlans, setLoadingPlans] = useState(false)
 
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  const fetchPlans = async () => {
+    setLoadingPlans(true)
+    try {
+      const response = await fetch('/api/plans')
+      if (response.ok) {
+        const data = await response.json()
+        // Filtrar apenas os 2 primeiros planos (Básico e Basic+)
+        // Assumindo que basic+ é o profissional
+        const filteredPlans = data
+          .filter((plan: Plan) => plan.slug === 'basic' || plan.slug === 'professional')
+          .map((plan: Plan) => {
+            // Renomear professional para Basic+
+            if (plan.slug === 'professional') {
+              return { ...plan, name: 'Basic+' }
+            }
+            return plan
+          })
+        setPlans(filteredPlans)
+      }
+    } catch (error) {
+      console.error('Error fetching plans:', error)
+    } finally {
+      setLoadingPlans(false)
+    }
+  }
+
+  const handleOpenPricingModal = () => {
+    setShowPricingModal(true)
+    if (plans.length === 0) {
+      fetchPlans()
+    }
+  }
+
+  const handleSelectPlan = (planSlug: string) => {
+    // Redirecionar para registro com o plano selecionado
+    window.location.href = `/register?plan=${planSlug}`
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 relative overflow-hidden">
@@ -90,12 +145,12 @@ export default function Home() {
               Começar Agora
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
-            <Link
-              href="/pricing"
+            <button
+              onClick={handleOpenPricingModal}
               className="px-8 py-4 bg-white text-blue-600 rounded-xl border-2 border-blue-600 hover:bg-blue-50 hover:border-blue-700 transition-all transform hover:scale-105 font-semibold text-lg flex items-center gap-2 shadow-md"
             >
               Ver Planos
-            </Link>
+            </button>
             <button className="px-8 py-4 bg-white text-blue-600 rounded-xl border-2 border-blue-600 hover:bg-blue-50 hover:border-blue-700 transition-all transform hover:scale-105 font-semibold text-lg flex items-center gap-2 shadow-md">
               <Download className="w-5 h-5" />
               Baixar Aplicativo
