@@ -1,7 +1,5 @@
 'use client'
 
-import Image from 'next/image'
-
 interface StockWaveLogoProps {
   className?: string
   size?: 'sm' | 'md' | 'lg' | 'xl'
@@ -15,35 +13,31 @@ export default function StockWaveLogo({
   showText = true,
   variant = 'full'
 }: StockWaveLogoProps) {
-  const sizeDimensions = {
-    sm: { width: 120, height: 40 },
-    md: { width: 160, height: 53 },
-    lg: { width: 200, height: 67 },
-    xl: { width: 240, height: 80 }
+  const sizeClasses = {
+    sm: 'h-8 w-auto',
+    md: 'h-10 w-auto',
+    lg: 'h-14 w-auto',
+    xl: 'h-16 w-auto'
   }
 
-  const textSizeClasses = {
-    sm: 'text-lg',
-    md: 'text-xl',
-    lg: 'text-2xl',
-    xl: 'text-3xl'
+  const iconSizeClasses = {
+    sm: 'h-6 w-6',
+    md: 'h-8 w-8',
+    lg: 'h-12 w-12',
+    xl: 'h-16 w-16'
   }
 
-  const dimensions = sizeDimensions[size]
-  const textSize = textSizeClasses[size]
+  const sizeClass = sizeClasses[size]
+  const iconSizeClass = iconSizeClasses[size]
 
-  // Se for apenas ícone, usar dimensões quadradas menores
+  // Se for apenas ícone
   if (variant === 'icon-only') {
-    const iconSize = size === 'sm' ? 32 : size === 'md' ? 40 : size === 'lg' ? 48 : 64
     return (
       <div className={className}>
-        <Image
-          src="/logo/Logo StockWave.png"
+        <img
+          src="/logo/Logo%20StockWave.png"
           alt="StockWave"
-          width={iconSize}
-          height={iconSize}
-          className="object-contain"
-          priority
+          className={iconSizeClass + ' object-contain'}
         />
       </div>
     )
@@ -52,13 +46,10 @@ export default function StockWaveLogo({
   // Logo completa (com texto)
   return (
     <div className={`flex items-center ${className}`}>
-      <Image
-        src="/logo/Logo StockWave.png"
+      <img
+        src="/logo/Logo%20StockWave.png"
         alt="StockWave"
-        width={dimensions.width}
-        height={dimensions.height}
-        className="object-contain"
-        priority
+        className={sizeClass + ' object-contain'}
       />
     </div>
   )
