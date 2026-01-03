@@ -393,15 +393,21 @@ export default function EstoquePage() {
                       Preço (R$) *
                     </label>
                     <div className="relative">
-                      <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium">R$</span>
                       <input
-                        type="number"
-                        step="0.01"
-                        min="0"
+                        type="text"
                         value={formData.price}
-                        onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                        className="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white"
-                        placeholder="0.00"
+                        onChange={(e) => {
+                          const formatted = formatCurrency(e.target.value)
+                          setFormData({ ...formData, price: formatted })
+                        }}
+                        onBlur={(e) => {
+                          // Garante que sempre tenha pelo menos R$ 0,00
+                          if (!e.target.value || e.target.value === 'R$') {
+                            setFormData({ ...formData, price: 'R$ 0,00' })
+                          }
+                        }}
+                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white font-semibold text-lg"
+                        placeholder="R$ 0,00"
                         required
                       />
                     </div>
