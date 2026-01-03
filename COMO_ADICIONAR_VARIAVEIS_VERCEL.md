@@ -12,7 +12,7 @@ Guia passo a passo completo para configurar as variáveis de ambiente no seu pro
 ### 2️⃣ Encontre seu Projeto
 
 1. No dashboard, você verá uma lista dos seus projetos
-2. Clique no projeto **gerencia-lucrativa** (ou o nome que você deu)
+2. Clique no projeto **stockwave** (ou o nome que você deu)
 
 ### 3️⃣ Vá para as Configurações
 
@@ -187,7 +187,7 @@ A interface da Vercel deve parecer assim:
 Antes de testar, confirme:
 
 - [ ] Acessei https://vercel.com e fiz login
-- [ ] Encontrei o projeto "gerencia-lucrativa"
+- [ ] Encontrei o projeto "stockwave"
 - [ ] Cliquei em "Settings"
 - [ ] Cliquei em "Environment Variables"
 - [ ] Adicionei todas as 5 variáveis:
