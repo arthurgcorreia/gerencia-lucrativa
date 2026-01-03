@@ -17,6 +17,7 @@ import {
   X,
   Check
 } from 'lucide-react'
+import StockWaveLogo from '@/components/StockWaveLogo'
 
 interface Plan {
   id: string
