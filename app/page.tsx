@@ -186,11 +186,7 @@ export default function Home() {
               <div className="flex items-center gap-6 text-sm text-gray-600 flex-wrap justify-center">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-5 h-5 text-green-500" />
-                  <span>Sem cartão de crédito</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-green-500" />
-                  <span>Teste grátis por 30 dias</span>
+                  <span>Teste grátis por 30 dias sem cartão de crédito</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-5 h-5 text-green-500" />
