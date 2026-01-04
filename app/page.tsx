@@ -76,8 +76,9 @@ export default function Home() {
   }
 
   const handleOpenPricingModal = () => {
+    // SEMPRE resetar para Basic+ (índice 0) quando abrir modal
+    setCurrentPlanIndex(0)
     setShowPricingModal(true)
-    setCurrentPlanIndex(0) // Sempre começar com Basic+
     if (plans.length === 0) {
       fetchPlans()
     }
