@@ -38,6 +38,7 @@ export default function StockWaveLogo({
           src="/logo/Logo%20StockWave.png"
           alt="StockWave"
           className={iconSizeClass + ' object-contain'}
+          style={{ mixBlendMode: 'normal' }}
         />
       </div>
     )
@@ -50,6 +51,7 @@ export default function StockWaveLogo({
         src="/logo/Logo%20StockWave.png"
         alt="StockWave"
         className={sizeClass + ' object-contain'}
+        style={{ mixBlendMode: 'normal' }}
       />
     </div>
   )
