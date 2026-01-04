@@ -198,112 +198,13 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-4 bg-white relative z-10">
-        <div className="container mx-auto">
-          <h2 className={`text-4xl md:text-5xl font-bold text-center text-gray-900 mb-4 transform transition-all duration-1000 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            Recursos Poderosos para seu Negócio
-          </h2>
-          <p className="text-center text-gray-600 mb-12 text-lg">
-            Tudo que você precisa para gerenciar seu negócio com eficiência
-          </p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <FeatureCard
-              icon={<Package className="w-8 h-8" />}
-              title="Gestão de Estoque"
-              description="Controle completo de produtos, códigos de barras e níveis de estoque em tempo real."
-              color="blue"
-              delay={0}
-              mounted={mounted}
-            />
-            <FeatureCard
-              icon={<TrendingUp className="w-8 h-8" />}
-              title="Vendas Inteligentes"
-              description="Sistema de vendas integrado com leitura de código de barras e cálculo automático."
-              color="green"
-              delay={100}
-              mounted={mounted}
-            />
-            <FeatureCard
-              icon={<BarChart3 className="w-8 h-8" />}
-              title="Analytics & Relatórios"
-              description="Visualize produtos mais vendidos, estoque baixo e métricas importantes do seu negócio."
-              color="purple"
-              delay={200}
-              mounted={mounted}
-            />
-            <FeatureCard
-              icon={<Zap className="w-8 h-8" />}
-              title="Rápido e Eficiente"
-              description="Interface intuitiva que acelera suas operações diárias."
-              color="yellow"
-              delay={300}
-              mounted={mounted}
-            />
-            <FeatureCard
-              icon={<Shield className="w-8 h-8" />}
-              title="Seguro e Confiável"
-              description="Seus dados protegidos com criptografia e backup automático."
-              color="red"
-              delay={400}
-              mounted={mounted}
-            />
-            <FeatureCard
-              icon={<Store className="w-8 h-8" />}
-              title="Multi-Loja"
-              description="Gerencie múltiplas lojas e estoques de um único painel."
-              color="indigo"
-              delay={500}
-              mounted={mounted}
-            />
-          </div>
-        </div>
-      </section>
+      <FeaturesSection />
 
       {/* Benefits Section */}
-      <section className="py-20 px-4 bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700 text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1),transparent_50%)]"></div>
-        </div>
-        <div className="container mx-auto relative z-10">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">
-            Por que escolher o StockWave?
-          </h2>
-          <p className="text-center text-blue-100 mb-12 text-lg">
-            A solução completa para gestão de estoque e vendas
-          </p>
-          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            <BenefitItem text="Interface intuitiva e fácil de usar" delay={0} mounted={mounted} />
-            <BenefitItem text="Integração com APIs de código de barras" delay={100} mounted={mounted} />
-            <BenefitItem text="Alertas automáticos de estoque baixo" delay={200} mounted={mounted} />
-            <BenefitItem text="Relatórios visuais e gráficos detalhados" delay={300} mounted={mounted} />
-            <BenefitItem text="Cálculo automático de vendas e totais" delay={400} mounted={mounted} />
-            <BenefitItem text="Disponível como aplicativo desktop" delay={500} mounted={mounted} />
-          </div>
-        </div>
-      </section>
+      <BenefitsSection />
 
       {/* CTA Section */}
-      <section className="py-20 px-4 relative z-10">
-        <div className="container mx-auto text-center">
-          <div className={`max-w-2xl mx-auto bg-gradient-to-br from-white to-blue-50 rounded-3xl shadow-2xl p-8 md:p-12 border border-blue-100 transform transition-all duration-1000 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            <div className="inline-block mb-4 p-3 bg-blue-100 rounded-full">
-              <Sparkles className="w-8 h-8 text-blue-600 animate-pulse" />
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Pronto para transformar seu negócio?
-            </h2>
-            <p className="text-gray-600 mb-8 text-lg">
-              Comece grátis hoje e veja a diferença que um sistema profissional faz.
-            </p>
-            <Link 
-              href="/register"
-              className="inline-block px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all transform hover:scale-110 hover:shadow-2xl font-semibold text-lg shadow-lg"
-            >
-              Criar Conta Gratuita
-            </Link>
-          </div>
-        </div>
-      </section>
+      <CTASection />
 
       {/* Pricing Modal */}
       {showPricingModal && (
@@ -516,14 +417,15 @@ export default function Home() {
   )
 }
 
-function FeatureCard({ icon, title, description, color, delay, mounted }: {
+function FeatureCard({ icon, title, description, color, delay }: {
   icon: React.ReactNode
   title: string
   description: string
   color: 'blue' | 'green' | 'purple' | 'yellow' | 'red' | 'indigo'
   delay: number
-  mounted: boolean
 }) {
+  const { ref, isVisible } = useScrollAnimation({ threshold: 0.1 })
+  
   const colorClasses = {
     blue: 'from-blue-500 to-blue-600',
     green: 'from-green-500 to-green-600',
@@ -544,7 +446,12 @@ function FeatureCard({ icon, title, description, color, delay, mounted }: {
 
   return (
     <div 
-      className={`bg-white p-6 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border-2 ${borderColorClasses[color]} transform hover:scale-105 hover:-translate-y-2 group ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
+      ref={ref}
+      className={`bg-white p-6 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border-2 ${borderColorClasses[color]} transform hover:scale-105 hover:-translate-y-2 group ${
+        isVisible 
+          ? 'translate-y-0 opacity-100' 
+          : 'translate-y-10 opacity-0'
+      }`}
       style={{ transitionDelay: `${delay}ms` }}
     >
       <div className="mb-4 relative">
@@ -559,10 +466,141 @@ function FeatureCard({ icon, title, description, color, delay, mounted }: {
   )
 }
 
-function BenefitItem({ text, delay, mounted }: { text: string; delay: number; mounted: boolean }) {
+function FeaturesSection() {
+  const { ref: titleRef, isVisible: titleVisible } = useScrollAnimation({ threshold: 0.2 })
+
+  return (
+    <section className="py-20 px-4 bg-white relative z-10">
+      <div className="container mx-auto">
+        <div ref={titleRef}>
+          <h2 className={`text-4xl md:text-5xl font-bold text-center text-gray-900 mb-4 transform transition-all duration-1000 ${titleVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+            Recursos Poderosos para seu Negócio
+          </h2>
+          <p className={`text-center text-gray-600 mb-12 text-lg transform transition-all duration-1000 delay-150 ${titleVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+            Tudo que você precisa para gerenciar seu negócio com eficiência
+          </p>
+        </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <FeatureCard
+            icon={<Package className="w-8 h-8" />}
+            title="Gestão de Estoque"
+            description="Controle completo de produtos, códigos de barras e níveis de estoque em tempo real."
+            color="blue"
+            delay={0}
+          />
+          <FeatureCard
+            icon={<TrendingUp className="w-8 h-8" />}
+            title="Vendas Inteligentes"
+            description="Sistema de vendas integrado com leitura de código de barras e cálculo automático."
+            color="green"
+            delay={100}
+          />
+          <FeatureCard
+            icon={<BarChart3 className="w-8 h-8" />}
+            title="Analytics & Relatórios"
+            description="Visualize produtos mais vendidos, estoque baixo e métricas importantes do seu negócio."
+            color="purple"
+            delay={200}
+          />
+          <FeatureCard
+            icon={<Zap className="w-8 h-8" />}
+            title="Rápido e Eficiente"
+            description="Interface intuitiva que acelera suas operações diárias."
+            color="yellow"
+            delay={300}
+          />
+          <FeatureCard
+            icon={<Shield className="w-8 h-8" />}
+            title="Seguro e Confiável"
+            description="Seus dados protegidos com criptografia e backup automático."
+            color="red"
+            delay={400}
+          />
+          <FeatureCard
+            icon={<Store className="w-8 h-8" />}
+            title="Multi-Loja"
+            description="Gerencie múltiplas lojas e estoques de um único painel."
+            color="indigo"
+            delay={500}
+          />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function BenefitsSection() {
+  const { ref: titleRef, isVisible: titleVisible } = useScrollAnimation({ threshold: 0.2 })
+
+  return (
+    <section className="py-20 px-4 bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700 text-white relative overflow-hidden">
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1),transparent_50%)]"></div>
+      </div>
+      <div className="container mx-auto relative z-10">
+        <div ref={titleRef}>
+          <h2 className={`text-4xl md:text-5xl font-bold text-center mb-4 transform transition-all duration-1000 ${titleVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+            Por que escolher o StockWave?
+          </h2>
+          <p className={`text-center text-blue-100 mb-12 text-lg transform transition-all duration-1000 delay-150 ${titleVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+            A solução completa para gestão de estoque e vendas
+          </p>
+        </div>
+        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          <BenefitItem text="Interface intuitiva e fácil de usar" delay={0} />
+          <BenefitItem text="Integração com APIs de código de barras" delay={100} />
+          <BenefitItem text="Alertas automáticos de estoque baixo" delay={200} />
+          <BenefitItem text="Relatórios visuais e gráficos detalhados" delay={300} />
+          <BenefitItem text="Cálculo automático de vendas e totais" delay={400} />
+          <BenefitItem text="Disponível como aplicativo desktop" delay={500} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function CTASection() {
+  const { ref, isVisible } = useScrollAnimation({ threshold: 0.2 })
+
+  return (
+    <section className="py-20 px-4 relative z-10">
+      <div className="container mx-auto text-center">
+        <div 
+          ref={ref}
+          className={`max-w-2xl mx-auto bg-gradient-to-br from-white to-blue-50 rounded-3xl shadow-2xl p-8 md:p-12 border border-blue-100 transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
+        >
+          <div className="inline-block mb-4 p-3 bg-blue-100 rounded-full">
+            <Sparkles className="w-8 h-8 text-blue-600 animate-pulse" />
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            Pronto para transformar seu negócio?
+          </h2>
+          <p className="text-gray-600 mb-8 text-lg">
+            Comece grátis hoje e veja a diferença que um sistema profissional faz.
+          </p>
+          <Link 
+            href="/register"
+            className="inline-block px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all transform hover:scale-110 hover:shadow-2xl font-semibold text-lg shadow-lg"
+          >
+            Criar Conta Gratuita
+          </Link>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function BenefitItem({ text, delay }: { text: string; delay: number }) {
+  const { ref, isVisible } = useScrollAnimation({ threshold: 0.1 })
+  
   return (
     <div 
-      className={`flex items-center text-lg bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 ${mounted ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'}`}
+      ref={ref}
+      className={`flex items-center text-lg bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300 ${
+        isVisible 
+          ? 'translate-x-0 opacity-100' 
+          : '-translate-x-10 opacity-0'
+      }`}
       style={{ transitionDelay: `${delay}ms` }}
     >
       <CheckCircle2 className="w-6 h-6 mr-3 flex-shrink-0 text-green-300" />
