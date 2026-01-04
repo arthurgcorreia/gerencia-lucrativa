@@ -50,23 +50,23 @@ export default function Home() {
       const response = await fetch('/api/plans')
       if (response.ok) {
         const data = await response.json()
-        // Filtrar apenas Ultra e Basic (remover Basic+)
+        // Filtrar apenas Basic+ (professional) e Basic
         const filteredPlans = data
-          .filter((plan: Plan) => plan.slug === 'basic' || plan.slug === 'ultra')
+          .filter((plan: Plan) => plan.slug === 'basic' || plan.slug === 'professional')
           .map((plan: Plan) => {
-            // Marcar Basic como mais popular
-            if (plan.slug === 'basic') {
-              return { ...plan, isPopular: true }
+            // Renomear professional para Basic+ e marcar como mais popular
+            if (plan.slug === 'professional') {
+              return { ...plan, name: 'Basic+', isPopular: true }
             }
             return plan
           })
           .sort((a: Plan, b: Plan) => {
-            // Ordenar: Ultra primeiro (mais caro), depois Basic
-            const order: Record<string, number> = { ultra: 0, basic: 1 }
+            // Ordenar: Basic+ primeiro (mais popular), depois Basic
+            const order: Record<string, number> = { professional: 0, basic: 1 }
             return (order[a.slug] || 999) - (order[b.slug] || 999)
           })
         setPlans(filteredPlans)
-        setCurrentPlanIndex(0) // Começar com Ultra (primeiro)
+        setCurrentPlanIndex(0) // Começar com Basic+ (primeiro)
       }
     } catch (error) {
       console.error('Error fetching plans:', error)
@@ -77,7 +77,7 @@ export default function Home() {
 
   const handleOpenPricingModal = () => {
     setShowPricingModal(true)
-    setCurrentPlanIndex(0) // Sempre começar com Ultra
+    setCurrentPlanIndex(0) // Sempre começar com Basic+
     if (plans.length === 0) {
       fetchPlans()
     }
