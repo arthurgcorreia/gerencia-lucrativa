@@ -156,24 +156,66 @@ export default function Home() {
           </p>
 
           {/* CTA Buttons with animation */}
-          <div className={`flex flex-col sm:flex-row gap-4 justify-center items-center transform transition-all duration-1000 delay-500 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            <Link 
-              href="/register"
-              className="group px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all transform hover:scale-110 hover:shadow-2xl font-semibold text-lg flex items-center gap-2 shadow-lg"
-            >
-              Começar Agora
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <button
-              onClick={handleOpenPricingModal}
-              className="px-8 py-4 bg-white text-blue-600 rounded-xl border-2 border-blue-600 hover:bg-blue-50 hover:border-blue-700 transition-all transform hover:scale-105 font-semibold text-lg flex items-center gap-2 shadow-md"
-            >
-              Ver Planos
-            </button>
-            <button className="px-8 py-4 bg-white text-blue-600 rounded-xl border-2 border-blue-600 hover:bg-blue-50 hover:border-blue-700 transition-all transform hover:scale-105 font-semibold text-lg flex items-center gap-2 shadow-md">
-              <Download className="w-5 h-5" />
-              Baixar Aplicativo
-            </button>
+          <div className={`transform transition-all duration-1000 delay-500 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+              <Link 
+                href="/register"
+                className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all transform hover:scale-110 hover:shadow-2xl font-semibold text-lg flex items-center gap-2 shadow-lg overflow-hidden"
+              >
+                <span className="relative z-10 flex items-center gap-2">
+                  Começar Agora
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-800 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              </Link>
+              <button
+                onClick={handleOpenPricingModal}
+                className="group px-8 py-4 bg-white text-blue-600 rounded-xl border-2 border-blue-600 hover:bg-blue-50 hover:border-blue-700 transition-all transform hover:scale-105 font-semibold text-lg flex items-center gap-2 shadow-md hover:shadow-lg relative overflow-hidden"
+              >
+                <Sparkles className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                <span>Ver Planos</span>
+              </button>
+              <button className="group px-8 py-4 bg-white text-blue-600 rounded-xl border-2 border-blue-600 hover:bg-blue-50 hover:border-blue-700 transition-all transform hover:scale-105 font-semibold text-lg flex items-center gap-2 shadow-md hover:shadow-lg relative overflow-hidden">
+                <Download className="w-5 h-5 group-hover:animate-bounce" />
+                <span>Baixar Aplicativo</span>
+              </button>
+            </div>
+            
+            {/* Trust Indicators */}
+            <div className="flex flex-col items-center gap-4 mt-8">
+              <div className="flex items-center gap-6 text-sm text-gray-600 flex-wrap justify-center">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-green-500" />
+                  <span>Sem cartão de crédito</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-green-500" />
+                  <span>Teste grátis por 30 dias</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-green-500" />
+                  <span>Cancele quando quiser</span>
+                </div>
+              </div>
+              
+              {/* Social Proof / Stats */}
+              <div className="flex items-center gap-8 pt-4 border-t border-gray-200 w-full max-w-2xl justify-center flex-wrap">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-900">1000+</div>
+                  <div className="text-sm text-gray-600">Usuários ativos</div>
+                </div>
+                <div className="w-px h-12 bg-gray-200 hidden sm:block"></div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-900">4.8/5</div>
+                  <div className="text-sm text-gray-600">Avaliação média</div>
+                </div>
+                <div className="w-px h-12 bg-gray-200 hidden sm:block"></div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-900">99.9%</div>
+                  <div className="text-sm text-gray-600">Disponibilidade</div>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Floating Icons */}
