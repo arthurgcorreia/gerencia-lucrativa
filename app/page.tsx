@@ -20,6 +20,7 @@ import {
   ChevronRight
 } from 'lucide-react'
 import StockWaveLogo from '@/components/StockWaveLogo'
+import { useScrollAnimation } from '@/hooks/useScrollAnimation'
 
 interface Plan {
   id: string
