@@ -217,12 +217,12 @@ export default function Home() {
 
           {/* Floating Icons */}
           <div className="mt-20 relative h-64 overflow-hidden">
-            <div className="absolute top-0 left-1/4 animate-float">
+            <div className="absolute top-0 left-[15%] animate-float">
               <div className="bg-white/80 backdrop-blur-sm p-4 rounded-2xl shadow-xl border border-blue-100">
                 <Package className="w-12 h-12 text-blue-600" />
               </div>
             </div>
-            <div className="absolute top-10 right-1/4 animate-float-delay">
+            <div className="absolute top-10 right-[15%] animate-float-delay">
               <div className="bg-white/80 backdrop-blur-sm p-4 rounded-2xl shadow-xl border border-purple-100">
                 <TrendingUp className="w-12 h-12 text-purple-600" />
               </div>
@@ -232,7 +232,7 @@ export default function Home() {
                 <BarChart3 className="w-12 h-12 text-pink-600" />
               </div>
             </div>
-            <div className="absolute top-1/2 right-1/6 transform -translate-y-1/2 animate-float-delay-3">
+            <div className="absolute top-1/2 right-1/2 transform translate-x-1/2 -translate-y-1/2 animate-float-delay-3">
               <div className="bg-white/80 backdrop-blur-sm p-4 rounded-2xl shadow-xl border border-green-100">
                 <Users className="w-12 h-12 text-green-600" />
               </div>
