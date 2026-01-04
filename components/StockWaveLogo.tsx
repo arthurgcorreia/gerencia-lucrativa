@@ -31,7 +31,7 @@ export default function StockWaveLogo({
   const iconSizeClass = iconSizeClasses[size]
 
   // URL da logo
-  const logoUrl = '/logo/Logo.png'
+  const logoUrl = '/logo/Logo_StockWave-removebg-preview.png'
 
   // Se for apenas ícone
   if (variant === 'icon-only') {
