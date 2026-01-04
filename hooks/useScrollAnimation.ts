@@ -12,7 +12,7 @@ export function useScrollAnimation(options: UseScrollAnimationOptions = {}) {
   const {
     threshold = 0.1,
     rootMargin = '0px 0px -100px 0px',
-    triggerOnce = true,
+    triggerOnce = false, // Mudado para false para animações sempre ocorrerem
   } = options
 
   const [isVisible, setIsVisible] = useState(false)
