@@ -35,7 +35,7 @@ export default function StockWaveLogo({
     return (
       <div className={className}>
         <img
-          src="/logo/Logo%20StockWave.png"
+          src="/logo/Logo StockWave.png"
           alt="StockWave"
           className={iconSizeClass + ' object-contain'}
           style={{ mixBlendMode: 'normal' }}
@@ -48,7 +48,7 @@ export default function StockWaveLogo({
   return (
     <div className={`flex items-center ${className}`}>
       <img
-        src="/logo/Logo%20StockWave.png"
+        src="/logo/Logo StockWave.png"
         alt="StockWave"
         className={sizeClass + ' object-contain'}
         style={{ mixBlendMode: 'normal' }}
