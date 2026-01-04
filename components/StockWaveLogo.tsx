@@ -30,15 +30,17 @@ export default function StockWaveLogo({
   const sizeClass = sizeClasses[size]
   const iconSizeClass = iconSizeClasses[size]
 
+  // URL da logo com encoding para espaços
+  const logoUrl = '/logo/Logo%20StockWave.png'
+
   // Se for apenas ícone
   if (variant === 'icon-only') {
     return (
       <div className={className}>
         <img
-          src="/logo/Logo StockWave.png"
+          src={logoUrl}
           alt="StockWave"
           className={iconSizeClass + ' object-contain'}
-          style={{ mixBlendMode: 'normal' }}
         />
       </div>
     )
@@ -48,10 +50,9 @@ export default function StockWaveLogo({
   return (
     <div className={`flex items-center ${className}`}>
       <img
-        src="/logo/Logo StockWave.png"
+        src={logoUrl}
         alt="StockWave"
         className={sizeClass + ' object-contain'}
-        style={{ mixBlendMode: 'normal' }}
       />
     </div>
   )
