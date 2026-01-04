@@ -11,7 +11,7 @@ interface UseScrollAnimationOptions {
 export function useScrollAnimation(options: UseScrollAnimationOptions = {}) {
   const {
     threshold = 0.1,
-    rootMargin = '0px',
+    rootMargin = '0px 0px -100px 0px',
     triggerOnce = true,
   } = options
 
@@ -21,6 +21,13 @@ export function useScrollAnimation(options: UseScrollAnimationOptions = {}) {
   useEffect(() => {
     const element = ref.current
     if (!element) return
+
+    // Verificar se IntersectionObserver está disponível (navegador)
+    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
+      // Fallback: mostrar elemento imediatamente se não houver suporte
+      setIsVisible(true)
+      return
+    }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -42,9 +49,7 @@ export function useScrollAnimation(options: UseScrollAnimationOptions = {}) {
     observer.observe(element)
 
     return () => {
-      if (element) {
-        observer.unobserve(element)
-      }
+      observer.disconnect()
     }
   }, [threshold, rootMargin, triggerOnce])
 
