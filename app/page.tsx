@@ -17,7 +17,8 @@ import {
   X,
   Check,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Users
 } from 'lucide-react'
 import StockWaveLogo from '@/components/StockWaveLogo'
 import { useScrollAnimation } from '@/hooks/useScrollAnimation'
@@ -229,6 +230,11 @@ export default function Home() {
             <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 animate-float-delay-2">
               <div className="bg-white/80 backdrop-blur-sm p-4 rounded-2xl shadow-xl border border-pink-100">
                 <BarChart3 className="w-12 h-12 text-pink-600" />
+              </div>
+            </div>
+            <div className="absolute top-1/2 right-1/6 transform -translate-y-1/2 animate-float-delay-3">
+              <div className="bg-white/80 backdrop-blur-sm p-4 rounded-2xl shadow-xl border border-green-100">
+                <Users className="w-12 h-12 text-green-600" />
               </div>
             </div>
           </div>
