@@ -30,8 +30,8 @@ export default function StockWaveLogo({
   const sizeClass = sizeClasses[size]
   const iconSizeClass = iconSizeClasses[size]
 
-  // URL da logo com encoding para espaços
-  const logoUrl = '/logo/Logo%20StockWave.png'
+  // URL da logo
+  const logoUrl = '/logo/Logo.png'
 
   // Se for apenas ícone
   if (variant === 'icon-only') {
